@@ -898,6 +898,33 @@ impl Tokenizer {
             .collect()
     }
 
+    /// Batch decode multiple token lists in parallel.
+    ///
+    /// Uses Rayon to parallelize decoding across token lists.
+    ///
+    /// # Example
+    ///
+    /// ```ignore
+    /// let token_lists = vec![vec![1, 2, 3], vec![4, 5, 6]];
+    /// let texts = tokenizer.decode_batch(&token_lists)?;
+    /// ```
+    pub fn decode_batch(&self, token_lists: &[Vec<u32>]) -> Result<Vec<String>, TokenizerError> {
+        token_lists
+            .par_iter()
+            .map(|tokens| self.decode(tokens))
+            .collect()
+    }
+
+    /// Batch decode multiple token lists in parallel, replacing invalid UTF-8.
+    ///
+    /// Like [`decode_batch`], but uses lossy UTF-8 conversion.
+    pub fn decode_batch_lossy(&self, token_lists: &[Vec<u32>]) -> Vec<String> {
+        token_lists
+            .par_iter()
+            .map(|tokens| self.decode_lossy(tokens))
+            .collect()
+    }
+
     /// Get the vocabulary size (number of tokens).
     pub fn vocab_size(&self) -> usize {
         self.encoder.len() + self.special_tokens.len()

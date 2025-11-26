@@ -709,6 +709,35 @@ impl PyTokenizer {
         self.inner.encode_batch_with_special(&texts)
     }
 
+    /// Batch decode multiple token lists in parallel.
+    ///
+    /// Uses Rayon to parallelize decoding across token lists.
+    ///
+    /// Args:
+    ///     token_lists: List of token ID lists
+    ///
+    /// Returns:
+    ///     List of decoded strings
+    ///
+    /// Raises:
+    ///     ValueError: If any decoded bytes are not valid UTF-8
+    fn decode_batch(&self, token_lists: Vec<Vec<u32>>) -> PyResult<Vec<String>> {
+        self.inner
+            .decode_batch(&token_lists)
+            .map_err(|e| PyValueError::new_err(e.to_string()))
+    }
+
+    /// Batch decode multiple token lists, replacing invalid UTF-8.
+    ///
+    /// Args:
+    ///     token_lists: List of token ID lists
+    ///
+    /// Returns:
+    ///     List of decoded strings with replacement characters for invalid UTF-8
+    fn decode_batch_lossy(&self, token_lists: Vec<Vec<u32>>) -> Vec<String> {
+        self.inner.decode_batch_lossy(&token_lists)
+    }
+
     /// Get the vocabulary size (including special tokens).
     #[getter]
     fn vocab_size(&self) -> usize {
