@@ -9,9 +9,73 @@ permissions:
   contents: read
 
 jobs:
+  # Validate tag matches .version file
+  validate-version:
+    name: Validate Version Tag
+    runs-on: ubuntu-latest
+    outputs:
+      cargo_version: ${{ steps.version.outputs.cargo_version }}
+      pypi_version: ${{ steps.version.outputs.pypi_version }}
+      base_version: ${{ steps.version.outputs.base_version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate and extract version
+        id: version
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          BASE_VERSION=$(cat .version | tr -d '[:space:]')
+          TAG_VERSION="${TAG#v}"
+
+          echo "Tag: $TAG"
+          echo "Base version from .version: $BASE_VERSION"
+
+          # Validate tag format
+          if [[ ! "$TAG_VERSION" =~ ^([0-9]+\.[0-9]+\.[0-9]+)(-([a-zA-Z]+)\.([0-9]+))?$ ]]; then
+            echo "::error::Invalid tag format '$TAG'. Expected: vX.Y.Z or vX.Y.Z-{alpha|beta|rc}.N"
+            exit 1
+          fi
+
+          TAG_BASE="${BASH_REMATCH[1]}"
+          PRERELEASE_TYPE="${BASH_REMATCH[3]}"
+          PRERELEASE_NUM="${BASH_REMATCH[4]}"
+
+          # Validate base version matches
+          if [[ "$TAG_BASE" != "$BASE_VERSION" ]]; then
+            echo "::error::Version mismatch! Tag base '$TAG_BASE' does not match .version file '$BASE_VERSION'"
+            echo "::error::Valid tags: v$BASE_VERSION, v$BASE_VERSION-alpha.N, v$BASE_VERSION-beta.N, v$BASE_VERSION-rc.N"
+            exit 1
+          fi
+
+          # Determine version strings (convert prerelease type to lowercase)
+          if [[ -n "$PRERELEASE_TYPE" ]]; then
+            PRERELEASE_TYPE_LOWER=$(echo "$PRERELEASE_TYPE" | tr '[:upper:]' '[:lower:]')
+            CARGO_VERSION="$BASE_VERSION-$PRERELEASE_TYPE_LOWER.$PRERELEASE_NUM"
+            case "$PRERELEASE_TYPE_LOWER" in
+              alpha) PYPI_VERSION="${BASE_VERSION}a${PRERELEASE_NUM}" ;;
+              beta)  PYPI_VERSION="${BASE_VERSION}b${PRERELEASE_NUM}" ;;
+              rc)    PYPI_VERSION="${BASE_VERSION}rc${PRERELEASE_NUM}" ;;
+              *)
+                echo "::error::Unknown prerelease type '$PRERELEASE_TYPE'. Use: alpha, beta, rc (case-insensitive)"
+                exit 1
+                ;;
+            esac
+          else
+            CARGO_VERSION="$BASE_VERSION"
+            PYPI_VERSION="$BASE_VERSION"
+          fi
+
+          echo "Cargo version: $CARGO_VERSION"
+          echo "PyPI version: $PYPI_VERSION"
+
+          echo "cargo_version=$CARGO_VERSION" >> $GITHUB_OUTPUT
+          echo "pypi_version=$PYPI_VERSION" >> $GITHUB_OUTPUT
+          echo "base_version=$BASE_VERSION" >> $GITHUB_OUTPUT
+
   # Build and publish to crates.io
   publish-crate:
     name: Publish to crates.io
+    needs: validate-version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,12 +86,25 @@ jobs:
       - name: Install PCRE2 dependencies
         run: sudo apt-get update && sudo apt-get install -y libpcre2-dev
 
+      - name: Update version in Cargo.toml
+        run: |
+          # Use awk to update version only in [package] section
+          awk -v ver="${{ needs.validate-version.outputs.cargo_version }}" '
+            /^\[package\]/ { in_package=1 }
+            /^\[/ && !/^\[package\]/ { in_package=0 }
+            in_package && /^version = "/ { print "version = \"" ver "\""; next }
+            { print }
+          ' Cargo.toml > Cargo.toml.tmp && mv Cargo.toml.tmp Cargo.toml
+          echo "Updated Cargo.toml to version ${{ needs.validate-version.outputs.cargo_version }}"
+          grep "^version" Cargo.toml
+
       - name: Publish to crates.io
         run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
 
   # Build Python wheels for multiple platforms
   build-wheels:
     name: Build wheels on ${{ matrix.os }}
+    needs: validate-version
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -41,6 +118,19 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+
+      - name: Update version in pyproject.toml
+        shell: bash
+        run: |
+          # Use awk to update version only in [project] section
+          awk -v ver="${{ needs.validate-version.outputs.pypi_version }}" '
+            /^\[project\]/ { in_project=1 }
+            /^\[/ && !/^\[project\]/ { in_project=0 }
+            in_project && /^version = "/ { print "version = \"" ver "\""; next }
+            { print }
+          ' pyproject.toml > pyproject.toml.tmp && mv pyproject.toml.tmp pyproject.toml
+          echo "Updated pyproject.toml to version ${{ needs.validate-version.outputs.pypi_version }}"
+          grep "^version" pyproject.toml
 
       - name: Install PCRE2 (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
@@ -72,9 +162,21 @@ jobs:
   # Build source distribution
   build-sdist:
     name: Build source distribution
+    needs: validate-version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Update version in pyproject.toml
+        run: |
+          # Use awk to update version only in [project] section
+          awk -v ver="${{ needs.validate-version.outputs.pypi_version }}" '
+            /^\[project\]/ { in_project=1 }
+            /^\[/ && !/^\[project\]/ { in_project=0 }
+            in_project && /^version = "/ { print "version = \"" ver "\""; next }
+            { print }
+          ' pyproject.toml > pyproject.toml.tmp && mv pyproject.toml.tmp pyproject.toml
+          echo "Updated pyproject.toml to version ${{ needs.validate-version.outputs.pypi_version }}"
 
       - name: Build sdist
         uses: PyO3/maturin-action@v1
@@ -91,7 +193,7 @@ jobs:
   # Publish to PyPI
   publish-pypi:
     name: Publish to PyPI
-    needs: [build-wheels, build-sdist]
+    needs: [validate-version, build-wheels, build-sdist]
     runs-on: ubuntu-latest
     environment:
       name: pypi
