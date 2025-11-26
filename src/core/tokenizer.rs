@@ -909,26 +909,16 @@ mod tests {
         assert_eq!(tokenizer.cache_len(), 0);
     }
 
-    #[test]
-    fn test_agent_tokens_constants() {
-        // Verify cl100k agent tokens don't conflict with OpenAI's reserved range
+    // Compile-time verification that agent tokens don't conflict with OpenAI's reserved range
+    const _: () = {
         assert!(super::cl100k_agent_tokens::SYSTEM > 100276); // After endofprompt
         assert!(super::cl100k_agent_tokens::SUMMARY_END == 100330); // Last token
-
-        // Verify o200k agent tokens don't conflict with OpenAI's reserved range
         assert!(super::o200k_agent_tokens::SYSTEM > 200018); // After endofprompt
         assert!(super::o200k_agent_tokens::SUMMARY_END == 200072); // Last token
-
-        // Verify token ordering is correct (no gaps or overlaps)
-        assert_eq!(
-            super::cl100k_agent_tokens::USER,
-            super::cl100k_agent_tokens::SYSTEM + 1
-        );
-        assert_eq!(
-            super::o200k_agent_tokens::USER,
-            super::o200k_agent_tokens::SYSTEM + 1
-        );
-    }
+                                                                   // Verify token ordering is correct (no gaps or overlaps)
+        assert!(super::cl100k_agent_tokens::USER == super::cl100k_agent_tokens::SYSTEM + 1);
+        assert!(super::o200k_agent_tokens::USER == super::o200k_agent_tokens::SYSTEM + 1);
+    };
 
     #[test]
     fn test_agent_tokens_encode_decode() {
