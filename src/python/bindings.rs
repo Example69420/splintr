@@ -39,7 +39,9 @@ use pyo3::prelude::*;
 use pyo3::types::PyDict;
 use rustc_hash::FxHashMap;
 
-use crate::core::{Tokenizer, CL100K_BASE_PATTERN, LLAMA3_PATTERN, O200K_BASE_PATTERN};
+use crate::core::{
+    byte_level_decode_bytes, Tokenizer, CL100K_BASE_PATTERN, LLAMA3_PATTERN, O200K_BASE_PATTERN,
+};
 
 /// Bundled cl100k_base vocabulary (GPT-4, GPT-3.5-turbo)
 const CL100K_BASE_VOCAB: &[u8] = include_bytes!("../../python/splintr/vocabs/cl100k_base.tiktoken");
@@ -907,6 +909,29 @@ impl PyTokenizer {
         )
     }
 
+    /// Create a ByteLevel streaming decoder for UTF-8 safe token-by-token decoding.
+    ///
+    /// This decoder is designed for tokenizers using ByteLevel BPE encoding
+    /// (GPT-2, Llama, DeepSeek V3) where tokens represent ByteLevel-encoded
+    /// characters that need to be decoded back to raw bytes before UTF-8 assembly.
+    ///
+    /// Returns:
+    ///     ByteLevelStreamingDecoder instance
+    ///
+    /// Example:
+    ///     tokenizer = Tokenizer.from_pretrained("deepseek_v3")
+    ///     decoder = tokenizer.byte_level_streaming_decoder()
+    ///     for token_id in token_stream:
+    ///         if text := decoder.add_token(token_id):
+    ///             print(text, end="", flush=True)
+    ///     print(decoder.flush())
+    fn byte_level_streaming_decoder(&self) -> PyByteLevelStreamingDecoder {
+        PyByteLevelStreamingDecoder::new(
+            self.inner.decoder().clone(),
+            self.inner.special_tokens_decoder().clone(),
+        )
+    }
+
     /// Clear the encoding cache.
     fn clear_cache(&self) {
         self.inner.clear_cache();
@@ -1119,6 +1144,194 @@ impl PyStreamingDecoder {
             // 4-byte sequence: 11110xxx
             0xF0..=0xF7 => bytes.len() < 4,
             // Continuation byte or invalid
+            _ => false,
+        }
+    }
+}
+
+/// Python wrapper for ByteLevel streaming decoder.
+///
+/// Handles UTF-8 safe streaming decode for token-by-token LLM output from
+/// ByteLevel-encoded tokenizers (GPT-2, Llama, DeepSeek V3). First decodes
+/// ByteLevel encoding to raw bytes, then assembles into valid UTF-8 strings.
+#[pyclass(name = "ByteLevelStreamingDecoder")]
+pub struct PyByteLevelStreamingDecoder {
+    decoder: FxHashMap<u32, Vec<u8>>,
+    special_decoder: FxHashMap<u32, String>,
+    buffer: Vec<u8>,
+}
+
+#[pymethods]
+impl PyByteLevelStreamingDecoder {
+    /// Add a token and return any complete UTF-8 characters.
+    ///
+    /// The token's ByteLevel-encoded bytes are first decoded to raw bytes,
+    /// then assembled into valid UTF-8 strings.
+    ///
+    /// Args:
+    ///     token_id: The token ID to decode
+    ///
+    /// Returns:
+    ///     String of complete characters, or None if still buffering
+    fn add_token(&mut self, token_id: u32) -> Option<String> {
+        if let Some(encoded_bytes) = self.decoder.get(&token_id) {
+            // Decode ByteLevel encoding to raw bytes
+            if let Some(raw_bytes) = byte_level_decode_bytes(encoded_bytes) {
+                self.buffer.extend_from_slice(&raw_bytes);
+            } else {
+                // Fallback: treat as raw bytes if ByteLevel decode fails
+                self.buffer.extend_from_slice(encoded_bytes);
+            }
+        } else if let Some(special) = self.special_decoder.get(&token_id) {
+            // Special tokens are NOT ByteLevel-encoded, add directly
+            self.buffer.extend_from_slice(special.as_bytes());
+        } else {
+            return None;
+        }
+
+        self.extract_complete_utf8()
+    }
+
+    /// Add multiple tokens at once and return complete UTF-8 characters.
+    ///
+    /// Args:
+    ///     token_ids: List of token IDs to decode
+    ///
+    /// Returns:
+    ///     String of complete characters, or None if still buffering
+    fn add_tokens(&mut self, token_ids: Vec<u32>) -> Option<String> {
+        for token_id in token_ids {
+            if let Some(encoded_bytes) = self.decoder.get(&token_id) {
+                if let Some(raw_bytes) = byte_level_decode_bytes(encoded_bytes) {
+                    self.buffer.extend_from_slice(&raw_bytes);
+                } else {
+                    self.buffer.extend_from_slice(encoded_bytes);
+                }
+            } else if let Some(special) = self.special_decoder.get(&token_id) {
+                self.buffer.extend_from_slice(special.as_bytes());
+            }
+        }
+
+        self.extract_complete_utf8()
+    }
+
+    /// Flush any remaining buffered bytes.
+    ///
+    /// If there are incomplete UTF-8 sequences in the buffer, they will be
+    /// replaced with the Unicode replacement character (U+FFFD).
+    ///
+    /// Returns:
+    ///     Any remaining buffered content
+    fn flush(&mut self) -> String {
+        if self.buffer.is_empty() {
+            return String::new();
+        }
+
+        let result = String::from_utf8_lossy(&self.buffer).into_owned();
+        self.buffer.clear();
+        result
+    }
+
+    /// Reset the decoder state, discarding any buffered bytes.
+    fn reset(&mut self) {
+        self.buffer.clear();
+    }
+
+    /// Check if there are buffered bytes waiting for completion.
+    #[getter]
+    fn has_pending(&self) -> bool {
+        !self.buffer.is_empty()
+    }
+
+    /// Get the number of pending bytes in the buffer.
+    #[getter]
+    fn pending_bytes(&self) -> usize {
+        self.buffer.len()
+    }
+
+    fn __repr__(&self) -> String {
+        format!(
+            "ByteLevelStreamingDecoder(pending_bytes={})",
+            self.buffer.len()
+        )
+    }
+}
+
+impl PyByteLevelStreamingDecoder {
+    fn new(decoder: FxHashMap<u32, Vec<u8>>, special_decoder: FxHashMap<u32, String>) -> Self {
+        Self {
+            decoder,
+            special_decoder,
+            buffer: Vec::with_capacity(16),
+        }
+    }
+
+    fn extract_complete_utf8(&mut self) -> Option<String> {
+        if self.buffer.is_empty() {
+            return None;
+        }
+
+        let valid_len = self.find_valid_utf8_len();
+
+        if valid_len == 0 {
+            return None;
+        }
+
+        let valid_bytes: Vec<u8> = self.buffer.drain(..valid_len).collect();
+        // SAFETY: We've verified this is valid UTF-8
+        let result = unsafe { String::from_utf8_unchecked(valid_bytes) };
+
+        Some(result)
+    }
+
+    fn find_valid_utf8_len(&self) -> usize {
+        let bytes = &self.buffer;
+        let len = bytes.len();
+
+        if len == 0 {
+            return 0;
+        }
+
+        // First, try to validate the entire buffer
+        if std::str::from_utf8(bytes).is_ok() {
+            return len;
+        }
+
+        // Find how many bytes at the end might be an incomplete sequence
+        for incomplete_len in 1..=3.min(len) {
+            let check_len = len - incomplete_len;
+            if check_len == 0 {
+                continue;
+            }
+
+            if std::str::from_utf8(&bytes[..check_len]).is_ok()
+                && Self::could_be_incomplete_sequence(&bytes[check_len..])
+            {
+                return check_len;
+            }
+        }
+
+        // If nothing works, find the last position that's valid
+        for i in (0..len).rev() {
+            if std::str::from_utf8(&bytes[..=i]).is_ok() {
+                return i + 1;
+            }
+        }
+
+        0
+    }
+
+    fn could_be_incomplete_sequence(bytes: &[u8]) -> bool {
+        if bytes.is_empty() {
+            return false;
+        }
+
+        let first = bytes[0];
+
+        match first {
+            0xC0..=0xDF => bytes.len() < 2,
+            0xE0..=0xEF => bytes.len() < 3,
+            0xF0..=0xF7 => bytes.len() < 4,
             _ => false,
         }
     }

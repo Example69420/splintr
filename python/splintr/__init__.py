@@ -43,6 +43,14 @@ Usage:
             print(text, end="", flush=True)
     print(decoder.flush())
 
+    # ByteLevel streaming decode (for DeepSeek V3, GPT-2)
+    tokenizer = Tokenizer.from_pretrained("deepseek_v3")
+    decoder = tokenizer.byte_level_streaming_decoder()
+    for token_id in token_stream:
+        if text := decoder.add_token(token_id):
+            print(text, end="", flush=True)
+    print(decoder.flush())
+
 Agent Tokens:
     from splintr import Tokenizer, CL100K_AGENT_TOKENS, LLAMA3_AGENT_TOKENS, DEEPSEEK_V3_AGENT_TOKENS
 
@@ -81,6 +89,7 @@ Agent Tokens:
 from ._core import (
     Tokenizer,
     StreamingDecoder,
+    ByteLevelStreamingDecoder,
     CL100K_BASE_PATTERN,
     O200K_BASE_PATTERN,
     LLAMA3_PATTERN,
@@ -93,6 +102,7 @@ from ._core import (
 __all__ = [
     "Tokenizer",
     "StreamingDecoder",
+    "ByteLevelStreamingDecoder",
     "CL100K_BASE_PATTERN",
     "O200K_BASE_PATTERN",
     "LLAMA3_PATTERN",

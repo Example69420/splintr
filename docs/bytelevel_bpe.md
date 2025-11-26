@@ -139,6 +139,85 @@ In ByteLevel BPE, the space character (0x20) is mapped to `Š` (U+0120). This is
 
 This convention allows the tokenizer to distinguish between word-initial and word-internal tokens.
 
+## Streaming Decoder
+
+When streaming LLM output token-by-token, ByteLevel tokenizers require special handling. The `ByteLevelStreamingDecoder` handles this automatically:
+
+### The Problem
+
+BPE tokens don't align with UTF-8 character boundaries. For ByteLevel tokenizers, there's an additional layer of complexity:
+
+1. Tokens are in ByteLevel representation (e.g., `Ġ` for space)
+2. Multi-byte UTF-8 characters may split across tokens
+3. Both layers must be handled correctly for streaming output
+
+### The Solution
+
+Use `byte_level_streaming_decoder()` instead of `streaming_decoder()` for ByteLevel tokenizers:
+
+```python
+from splintr import Tokenizer
+
+# DeepSeek V3 uses ByteLevel BPE
+tokenizer = Tokenizer.from_pretrained("deepseek_v3")
+
+# Create ByteLevel streaming decoder
+decoder = tokenizer.byte_level_streaming_decoder()
+
+# Process tokens as they arrive from LLM
+for token_id in token_stream:
+    if text := decoder.add_token(token_id):
+        print(text, end="", flush=True)
+
+# Flush remaining buffered bytes
+print(decoder.flush())
+```
+
+### How It Works
+
+The `ByteLevelStreamingDecoder` performs two-stage decoding:
+
+1. **ByteLevel Decode**: Converts ByteLevel-encoded token bytes back to raw bytes
+   - `Ġ` (U+0120) → `0x20` (space)
+   - `Ċ` (U+010A) → `0x0A` (newline)
+   - Regular ASCII stays unchanged
+
+2. **UTF-8 Assembly**: Buffers raw bytes until complete UTF-8 characters are available
+   - Handles multi-byte characters split across token boundaries
+   - Only outputs when valid UTF-8 characters can be formed
+
+### API
+
+```python
+decoder = tokenizer.byte_level_streaming_decoder()
+
+# Add single token
+text = decoder.add_token(token_id)  # Returns str or None
+
+# Add multiple tokens
+text = decoder.add_tokens([token_id1, token_id2])
+
+# Flush remaining bytes (incomplete sequences become U+FFFD)
+remaining = decoder.flush()
+
+# Reset decoder state
+decoder.reset()
+
+# Check buffer status
+decoder.has_pending    # bool: True if bytes are buffered
+decoder.pending_bytes  # int: Number of buffered bytes
+```
+
+### When to Use Which Decoder
+
+| Tokenizer | Decoder |
+| --------- | ------- |
+| DeepSeek V3 | `byte_level_streaming_decoder()` |
+| GPT-2 | `byte_level_streaming_decoder()` |
+| cl100k_base (GPT-4) | `streaming_decoder()` |
+| o200k_base (GPT-4o) | `streaming_decoder()` |
+| Llama 3 | `streaming_decoder()` |
+
 ## See Also
 
 - [Special Tokens Reference](special_tokens.md) - DeepSeek V3 special tokens
