@@ -78,4 +78,4 @@ __all__ = [
     "CL100K_AGENT_TOKENS",
     "O200K_AGENT_TOKENS",
 ]
-__version__ = "0.1.0b1"
+__version__ = "0.3.0"

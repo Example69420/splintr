@@ -31,7 +31,7 @@ pip install splintr-rs
 
 ```toml
 [dependencies]
-splintr = "0.1.0-beta.1"
+splintr = "0.3.0"
 ```
 
 ## Quick Start
