@@ -194,7 +194,7 @@ def run_single_text_benchmarks(
         results["single_text"][name] = {"chars": len(text), "bytes": data_size}
 
         # Splintr
-        print("  splintr:")
+        print("  Splintr:")
         result = benchmark(
             lambda t=text: splintr_enc.encode(t),
             iterations=iterations,
@@ -221,7 +221,7 @@ def run_single_text_benchmarks(
 
             speedup = result.mean_ms / splintr_result.mean_ms
             results["single_text"][name]["speedup"] = speedup
-            print(f"  >>> splintr is {speedup:.2f}x {'faster' if speedup > 1 else 'slower'}")
+            print(f"  >>> Splintr is {speedup:.2f}x {'faster' if speedup > 1 else 'slower'}")
 
     return results
 
@@ -279,7 +279,7 @@ def run_batch_benchmarks(
         splintr_batch = result
 
         # Splintr sequential (for comparison)
-        print("  splintr sequential:")
+        print("  Splintr sequential:")
         result = benchmark(
             lambda: [splintr_enc.encode(t) for t in texts],
             iterations=iterations,
@@ -307,7 +307,7 @@ def run_batch_benchmarks(
             results["batch"][config_name]["tiktoken_sequential"] = asdict(result)
             speedup = result.mean_ms / splintr_batch.mean_ms
             results["batch"][config_name]["vs_tiktoken_speedup"] = speedup
-            print(f"  >>> splintr batch is {speedup:.2f}x faster than tiktoken sequential")
+            print(f"  >>> Splintr batch is {speedup:.2f}x faster than tiktoken sequential")
 
     return results
 
@@ -466,7 +466,7 @@ def run_special_tokens_benchmark(
     results["special_tokens"]["chars"] = len(text_with_special)
     results["special_tokens"]["bytes"] = data_size
 
-    print("  splintr encode_with_special:")
+    print("  Splintr encode_with_special:")
     result = benchmark(
         lambda: splintr_enc.encode_with_special(text_with_special),
         iterations=iterations,
@@ -490,13 +490,13 @@ def run_special_tokens_benchmark(
 
         speedup = result.mean_ms / splintr_result.mean_ms
         results["special_tokens"]["speedup"] = speedup
-        print(f"  >>> splintr is {speedup:.2f}x {'faster' if speedup > 1 else 'slower'}")
+        print(f"  >>> Splintr is {speedup:.2f}x {'faster' if speedup > 1 else 'slower'}")
 
     return results
 
 
 def run_correctness_check(splintr_enc, tiktoken_enc) -> dict:
-    """Verify splintr produces identical output to tiktoken."""
+    """Verify Splintr produces identical output to tiktoken."""
     results = {"correctness": {"tests": [], "all_passed": False}}
 
     print("\n" + "=" * 70)
@@ -537,7 +537,7 @@ def run_correctness_check(splintr_enc, tiktoken_enc) -> dict:
         })
 
         if not match:
-            print(f"    splintr:  {splintr_tokens}")
+            print(f"    Splintr:  {splintr_tokens}")
             print(f"    tiktoken: {tiktoken_tokens}")
 
     print("-" * 50)
@@ -606,7 +606,7 @@ def generate_summary(results: dict) -> str:
     # Batch results
     if "batch" in results:
         lines.append("## Batch Encoding\n")
-        lines.append("| Config | splintr parallel (ms) | splintr seq (ms) | tiktoken (ms) | Parallel Speedup | vs tiktoken |")
+        lines.append("| Config | Splintr parallel (ms) | Splintr seq (ms) | Tiktoken (ms) | Parallel Speedup | vs Tiktoken |")
         lines.append("|--------|----------------------|------------------|---------------|------------------|-------------|")
 
         for config, data in results["batch"].items():
@@ -691,7 +691,7 @@ def main():
     # Load tokenizers
     print(f"\nLoading tokenizers (model: {args.model})...")
     splintr_enc = SplintrTokenizer.from_pretrained(args.model)
-    print(f"  splintr: {splintr_enc}")
+    print(f"  Splintr: {splintr_enc}")
 
     tiktoken_enc = None
     if args.compare or args.correctness_only:

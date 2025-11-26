@@ -1,4 +1,4 @@
-# splintr
+# Splintr
 
 [![Crates.io](https://img.shields.io/crates/v/splintr.svg)](https://crates.io/crates/splintr)
 [![PyPI](https://img.shields.io/pypi/v/splintr-rs.svg)](https://pypi.org/project/splintr-rs/)
@@ -8,7 +8,7 @@ A high-performance BPE tokenizer implemented in Rust with Python bindings, desig
 
 ## Features
 
-splintr implements several optimizations that make tokenization faster and more efficient:
+Splintr implements several optimizations that make tokenization faster and more efficient:
 
 - **PCRE2 with JIT compilation**: Uses PCRE2's just-in-time compilation for regex matching, providing 2-4x speedup over fancy-regex on pattern matching operations
 - **Rayon parallelism**: Leverages multiple CPU cores for encoding batches of text and individual regex chunks within each text
@@ -17,6 +17,7 @@ splintr implements several optimizations that make tokenization faster and more 
 - **Aho-Corasick for special tokens**: Employs the Aho-Corasick algorithm for fast multi-pattern matching of special tokens, avoiding regex alternation overhead
 - **LRU cache**: Caches frequently encoded text chunks to avoid redundant BPE encoding operations
 - **UTF-8 streaming decoder**: Safely handles token-by-token decoding for LLM output, buffering incomplete UTF-8 sequences across token boundaries
+- **Extended agent tokens**: 54 special tokens for chat models, Chain-of-Thought reasoning, ReAct agents, tool calling, RAG citations, and multimodal applications (see [Special Tokens](docs/special_tokens.md))
 
 ## Installation
 
@@ -192,6 +193,7 @@ print(decoder.flush())
 ```
 
 This approach ensures that:
+
 1. Users see text as soon as complete characters are available
 2. Multi-byte Unicode characters display correctly
 3. No corruption occurs at token boundaries
@@ -204,27 +206,28 @@ Benchmarks performed on Linux (6.16.8-arch3-1) with 24 CPU cores, comparing spli
 
 Performance on various text types:
 
-| Content Type | Size | splintr (ms) | tiktoken (ms) | Speedup |
-|--------------|------|--------------|---------------|---------|
-| Long English | 450,000 chars | 7.94 | 19.91 | **2.5x** |
-| Python Code | 59,200 chars | 1.67 | 5.90 | **3.5x** |
-| JSON | 29,000 chars | 1.20 | 2.76 | **2.3x** |
-| Numbers | 55,000 chars | 2.27 | 6.09 | **2.7x** |
-| Whitespace-heavy | 50,000 chars | 1.36 | 4.91 | **3.6x** |
-| Chinese | 11,500 chars | 1.09 | 1.45 | **1.3x** |
+| Content Type     | Size          | splintr (ms) | tiktoken (ms) | Speedup  |
+| ---------------- | ------------- | ------------ | ------------- | -------- |
+| Long English     | 450,000 chars | 7.94         | 19.91         | **2.5x** |
+| Python Code      | 59,200 chars  | 1.67         | 5.90          | **3.5x** |
+| JSON             | 29,000 chars  | 1.20         | 2.76          | **2.3x** |
+| Numbers          | 55,000 chars  | 2.27         | 6.09          | **2.7x** |
+| Whitespace-heavy | 50,000 chars  | 1.36         | 4.91          | **3.6x** |
+| Chinese          | 11,500 chars  | 1.09         | 1.45          | **1.3x** |
 
 ### Batch Encoding
 
 Batch operations show significant speedup through parallelism:
 
-| Configuration | splintr parallel (ms) | tiktoken (ms) | Speedup vs tiktoken |
-|---------------|----------------------|---------------|---------------------|
-| 10 × 1,000 chars | 0.25 | 0.48 | **1.9x** |
-| 100 × 1,000 chars | 1.11 | 4.66 | **4.2x** |
-| 1,000 × 100 chars | 1.42 | 6.95 | **4.9x** |
-| 100 × 10,000 chars | 8.24 | 45.72 | **5.5x** |
+| Configuration      | splintr parallel (ms) | tiktoken (ms) | Speedup vs tiktoken |
+| ------------------ | --------------------- | ------------- | ------------------- |
+| 10 × 1,000 chars   | 0.25                  | 0.48          | **1.9x**            |
+| 100 × 1,000 chars  | 1.11                  | 4.66          | **4.2x**            |
+| 1,000 × 100 chars  | 1.42                  | 6.95          | **4.9x**            |
+| 100 × 10,000 chars | 8.24                  | 45.72         | **5.5x**            |
 
 **Parallel speedup within splintr:**
+
 - 100 × 1,000 chars: 8.6x faster (parallel vs sequential)
 - 1,000 × 100 chars: 16.8x faster (parallel vs sequential)
 
@@ -250,6 +253,7 @@ cat results/my_benchmark.md
 ```
 
 The benchmark suite tests:
+
 - Single text encoding across various content types (English, code, multilingual, etc.)
 - Batch encoding with different batch sizes and text lengths
 - Streaming decoder performance
@@ -259,22 +263,55 @@ You can customize the benchmark by modifying `benchmark.py` or adding your own t
 
 ## Supported Models
 
-| Model | Use Case | Vocabulary Size | Special Tokens | Import Constant |
-|-------|----------|----------------|----------------|-----------------|
-| `cl100k_base` | GPT-4, GPT-3.5-turbo | ~100,000 | 5 | `CL100K_BASE_PATTERN` |
-| `o200k_base` | GPT-4o | ~200,000 | 2 | `O200K_BASE_PATTERN` |
+| Model         | Use Case             | Vocabulary Size | Special Tokens | Import Constant       |
+| ------------- | -------------------- | --------------- | -------------- | --------------------- |
+| `cl100k_base` | GPT-4, GPT-3.5-turbo | ~100,000        | 5 + 54 agent   | `CL100K_BASE_PATTERN` |
+| `o200k_base`  | GPT-4o               | ~200,000        | 2 + 54 agent   | `O200K_BASE_PATTERN`  |
 
-**Special tokens:**
+**OpenAI standard tokens:**
 
 - **cl100k_base**: `<|endoftext|>`, `<|fim_prefix|>`, `<|fim_middle|>`, `<|fim_suffix|>`, `<|endofprompt|>`
 - **o200k_base**: `<|endoftext|>`, `<|endofprompt|>`
 
+**Agent tokens (54 per model):**
+
+Splintr extends both vocabularies with tokens for building agent systems. See [docs/special_tokens.md](docs/special_tokens.md) for complete documentation.
+
+```python
+from splintr import Tokenizer, CL100K_AGENT_TOKENS
+
+tokenizer = Tokenizer.from_pretrained("cl100k_base")
+
+# Encode with special tokens
+text = "<|think|>Let me reason...<|/think|>The answer is 42."
+tokens = tokenizer.encode_with_special(text)
+
+# Access token IDs programmatically
+print(CL100K_AGENT_TOKENS.THINK)      # 100282
+print(CL100K_AGENT_TOKENS.FUNCTION)   # 100292
+```
+
+| Category     | Tokens                                              | Purpose                    |
+| ------------ | --------------------------------------------------- | -------------------------- |
+| Conversation | `system`, `user`, `assistant`, `im_start`, `im_end` | ChatML format              |
+| Thinking     | `think`                                             | Chain-of-Thought reasoning |
+| ReAct        | `plan`, `step`, `act`, `observe`                    | Agent action loops         |
+| Tools        | `function`, `result`, `error`                       | Function calling           |
+| Code         | `code`, `output`, `lang`                            | Code execution             |
+| RAG          | `context`, `quote`, `cite`, `source`                | Citations                  |
+| Memory       | `memory`, `recall`                                  | State persistence          |
+| Control      | `pad`, `stop`, `sep`                                | Sequence control           |
+| Multimodal   | `image`, `audio`, `video`                           | Non-text content           |
+| Document     | `title`, `section`, `summary`                       | Structured docs            |
+
 ## Use Cases
 
-splintr is designed for:
+Splintr is designed for:
 
 - **LLM applications**: Tokenizing prompts and streaming decoder for real-time output display
+- **Agent systems**: Building ReAct agents, tool-calling systems, and Chain-of-Thought reasoning
 - **Training pipelines**: Fast batch encoding of large datasets for model training
+- **RAG applications**: Structured context injection with citation support
 - **Token counting**: Estimating API costs or enforcing token limits
 - **Text preprocessing**: Converting text to tokens for embedding models or other NLP tasks
 
@@ -321,7 +358,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## Acknowledgments
 
-splintr builds upon concepts from:
+Splintr builds upon concepts from:
+
 - [tiktoken](https://github.com/openai/tiktoken) - OpenAI's reference BPE tokenizer
 - [tokenizers](https://github.com/huggingface/tokenizers) - Hugging Face's tokenization library
 

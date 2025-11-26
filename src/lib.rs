@@ -7,7 +7,7 @@ pub use core::{
     StreamingDecoder, Tokenizer, TokenizerError, CL100K_BASE_PATTERN, O200K_BASE_PATTERN,
 };
 
-/// splintr - Fast Rust BPE tokenizer with Python bindings
+/// Splintr - Fast Rust BPE tokenizer with Python bindings
 ///
 /// A high-performance tokenizer featuring:
 /// - PCRE2 with JIT compilation (2-4x faster than fancy-regex)
@@ -17,10 +17,13 @@ pub use core::{
 /// - Aho-Corasick for fast special token matching
 /// - LRU cache for frequently encoded chunks
 /// - UTF-8 streaming decoder for LLM output
+/// - Agent tokens for chat/reasoning/tool-use applications
 #[pymodule]
 fn _core(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<python::PyTokenizer>()?;
     m.add_class::<python::PyStreamingDecoder>()?;
+    m.add_class::<python::PyCL100KAgentTokens>()?;
+    m.add_class::<python::PyO200KAgentTokens>()?;
     m.add("CL100K_BASE_PATTERN", CL100K_BASE_PATTERN)?;
     m.add("O200K_BASE_PATTERN", O200K_BASE_PATTERN)?;
     Ok(())

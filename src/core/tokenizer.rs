@@ -30,6 +30,488 @@ pub const CL100K_BASE_PATTERN: &str = r"(?i:'s|'t|'re|'ve|'m|'ll|'d)|[^\r\n\p{L}
 /// Default regex pattern for o200k_base (GPT-4o)
 pub const O200K_BASE_PATTERN: &str = r"[^\r\n\p{L}\p{N}]?[\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{M}]*[\p{Ll}\p{Lm}\p{Lo}\p{M}]+(?i:'s|'t|'re|'ve|'m|'ll|'d)?|[^\r\n\p{L}\p{N}]?[\p{Lu}\p{Lt}\p{Lm}\p{Lo}\p{M}]+[\p{Ll}\p{Lm}\p{Lo}\p{M}]*(?i:'s|'t|'re|'ve|'m|'ll|'d)?|\p{N}{1,3}| ?[^\s\p{L}\p{N}]+[\r\n]*|\s*[\r\n]+|\s+(?!\S)|\s+";
 
+// =============================================================================
+// Agent Token Constants (cl100k_base: 100277+, o200k_base: 200019+)
+// =============================================================================
+// These tokens extend the vocabulary for agent/chat applications without
+// conflicting with OpenAI's reserved special token ranges.
+
+/// Agent tokens for cl100k_base (GPT-4, GPT-3.5-turbo).
+///
+/// These special tokens extend the cl100k_base vocabulary for building chat models,
+/// reasoning systems, and autonomous agents. Token IDs start at 100277 to avoid
+/// conflicts with OpenAI's reserved range (100257-100276).
+///
+/// # Token Categories
+///
+/// ## Conversation Structure (100277-100281)
+/// Standard ChatML-style tokens for multi-turn conversations:
+/// - `<|system|>`: Marks system instructions that define assistant behavior
+/// - `<|user|>`: Marks user input/queries
+/// - `<|assistant|>`: Marks assistant responses
+/// - `<|im_start|>`: Generic message start delimiter (ChatML format)
+/// - `<|im_end|>`: Generic message end delimiter (ChatML format)
+///
+/// Example:
+/// ```text
+/// <|im_start|>system
+/// You are a helpful assistant.<|im_end|>
+/// <|im_start|>user
+/// Hello!<|im_end|>
+/// <|im_start|>assistant
+/// Hi there!<|im_end|>
+/// ```
+///
+/// ## Reasoning/Thinking (100282-100283)
+/// Chain-of-Thought (CoT) tokens for System 2 reasoning, similar to DeepSeek-R1
+/// or OpenAI o1-style thinking:
+/// - `<|think|>`: Start of internal reasoning (hidden from user in production)
+/// - `<|/think|>`: End of internal reasoning
+///
+/// Example:
+/// ```text
+/// <|think|>
+/// Let me break this down step by step...
+/// First, I need to consider X.
+/// Then, Y follows from X.
+/// <|/think|>
+/// The answer is Y.
+/// ```
+///
+/// ## ReAct Agent Loop (100284-100291)
+/// Tokens for ReAct (Reason + Act) agent architectures:
+/// - `<|plan|>`: High-level planning phase where agent decides strategy
+/// - `<|step|>`: Individual step within a plan
+/// - `<|act|>`: Action intent declaration (what the agent wants to do)
+/// - `<|observe|>`: Observation/feedback from environment after action
+///
+/// Example:
+/// ```text
+/// <|plan|>
+/// I need to: 1) Search for info, 2) Summarize findings
+/// <|/plan|>
+/// <|step|>Searching for relevant information<|/step|>
+/// <|act|>search("climate change effects")<|/act|>
+/// <|observe|>Found 3 relevant articles...<|/observe|>
+/// ```
+///
+/// ## Tool/Function Calling (100292-100297)
+/// Structured tool use with explicit success/error handling:
+/// - `<|function|>`: Function call specification (name + arguments)
+/// - `<|result|>`: Successful function return value
+/// - `<|error|>`: Function execution error (enables retry logic)
+///
+/// Example:
+/// ```text
+/// <|function|>{"name": "get_weather", "args": {"city": "London"}}<|/function|>
+/// <|result|>{"temp": 18, "condition": "cloudy"}<|/result|>
+/// ```
+///
+/// ## Code Execution (100298-100303)
+/// Jupyter notebook-style code interpreter flow:
+/// - `<|code|>`: Code block to execute
+/// - `<|output|>`: Execution output (stdout, return values)
+/// - `<|lang|>`: Programming language identifier
+///
+/// Example:
+/// ```text
+/// <|code|><|lang|>python<|/lang|>
+/// import math
+/// print(math.sqrt(16))
+/// <|/code|>
+/// <|output|>4.0<|/output|>
+/// ```
+///
+/// ## RAG/Citations (100304-100311)
+/// Retrieval-Augmented Generation with source attribution:
+/// - `<|context|>`: Injected context from retrieval system
+/// - `<|quote|>`: Direct quotation from source material
+/// - `<|cite|>`: Citation reference marker
+/// - `<|source|>`: Source metadata (URL, document ID, etc.)
+///
+/// Example:
+/// ```text
+/// <|context|>
+/// <|source|>doc_123<|/source|>
+/// The Earth orbits the Sun in 365.25 days.
+/// <|/context|>
+/// According to the source<|cite|>doc_123<|/cite|>, <|quote|>The Earth orbits
+/// the Sun in 365.25 days.<|/quote|>
+/// ```
+///
+/// ## Memory/State (100312-100315)
+/// Long-term memory and state persistence:
+/// - `<|memory|>`: Store information for future reference
+/// - `<|recall|>`: Retrieve previously stored information
+///
+/// Example:
+/// ```text
+/// <|memory|>User prefers concise responses<|/memory|>
+/// ...later...
+/// <|recall|>User prefers concise responses<|/recall|>
+/// ```
+///
+/// ## Control Tokens (100316-100318)
+/// Sequence control and formatting:
+/// - `<|pad|>`: Padding token for batch alignment
+/// - `<|stop|>`: Generation stop signal
+/// - `<|sep|>`: Separator between segments
+///
+/// ## Multimodal (100319-100324)
+/// Placeholders for non-text content:
+/// - `<|image|>`: Image embedding or base64 data
+/// - `<|audio|>`: Audio embedding or encoded data
+/// - `<|video|>`: Video embedding or encoded data
+///
+/// Example:
+/// ```text
+/// Describe this image: <|image|>base64_data_here<|/image|>
+/// ```
+///
+/// ## Document Structure (100325-100330)
+/// Semantic layout tokens for parsing structured documents:
+/// - `<|title|>`: Document or section title
+/// - `<|section|>`: Semantic section boundary
+/// - `<|summary|>`: Condensed content summary
+///
+/// Example:
+/// ```text
+/// <|title|>Introduction<|/title|>
+/// <|section|>
+/// This section covers the basics...
+/// <|/section|>
+/// <|summary|>Key points: X, Y, Z<|/summary|>
+/// ```
+pub mod cl100k_agent_tokens {
+    // =========================================================================
+    // Conversation Structure (100277-100281)
+    // =========================================================================
+
+    /// System message marker - defines assistant behavior and constraints.
+    pub const SYSTEM: u32 = 100277;
+    /// User message marker - marks human input in conversation.
+    pub const USER: u32 = 100278;
+    /// Assistant message marker - marks AI responses.
+    pub const ASSISTANT: u32 = 100279;
+    /// ChatML message start - generic delimiter for any role.
+    pub const IM_START: u32 = 100280;
+    /// ChatML message end - closes any message block.
+    pub const IM_END: u32 = 100281;
+
+    // =========================================================================
+    // Reasoning/Thinking - Chain-of-Thought (100282-100283)
+    // =========================================================================
+
+    /// Start of thinking/reasoning block (System 2 cognition).
+    /// Content between THINK and THINK_END represents internal reasoning
+    /// that may be hidden from users in production.
+    pub const THINK: u32 = 100282;
+    /// End of thinking/reasoning block.
+    pub const THINK_END: u32 = 100283;
+
+    // =========================================================================
+    // ReAct Agent Loop (100284-100291)
+    // =========================================================================
+
+    /// Start of planning phase - high-level strategy formulation.
+    pub const PLAN: u32 = 100284;
+    /// End of planning phase.
+    pub const PLAN_END: u32 = 100285;
+    /// Start of individual step - discrete action within a plan.
+    pub const STEP: u32 = 100286;
+    /// End of step.
+    pub const STEP_END: u32 = 100287;
+    /// Start of action - the intent to perform an operation.
+    pub const ACT: u32 = 100288;
+    /// End of action.
+    pub const ACT_END: u32 = 100289;
+    /// Start of observation - environment feedback after action.
+    pub const OBSERVE: u32 = 100290;
+    /// End of observation.
+    pub const OBSERVE_END: u32 = 100291;
+
+    // =========================================================================
+    // Tool/Function Calling (100292-100297)
+    // =========================================================================
+
+    /// Start of function call - contains function name and arguments (usually JSON).
+    pub const FUNCTION: u32 = 100292;
+    /// End of function call.
+    pub const FUNCTION_END: u32 = 100293;
+    /// Start of function result - successful return value.
+    pub const RESULT: u32 = 100294;
+    /// End of function result.
+    pub const RESULT_END: u32 = 100295;
+    /// Start of error block - function execution failure, enables retry logic.
+    pub const ERROR: u32 = 100296;
+    /// End of error block.
+    pub const ERROR_END: u32 = 100297;
+
+    // =========================================================================
+    // Code Execution (100298-100303)
+    // =========================================================================
+
+    /// Start of code block - executable code content.
+    pub const CODE: u32 = 100298;
+    /// End of code block.
+    pub const CODE_END: u32 = 100299;
+    /// Start of execution output - stdout, return values, rendered output.
+    pub const OUTPUT: u32 = 100300;
+    /// End of execution output.
+    pub const OUTPUT_END: u32 = 100301;
+    /// Start of language identifier (e.g., "python", "javascript").
+    pub const LANG: u32 = 100302;
+    /// End of language identifier.
+    pub const LANG_END: u32 = 100303;
+
+    // =========================================================================
+    // RAG/Citations (100304-100311)
+    // =========================================================================
+
+    /// Start of retrieved context block - injected by RAG pipeline.
+    pub const CONTEXT: u32 = 100304;
+    /// End of context block.
+    pub const CONTEXT_END: u32 = 100305;
+    /// Start of direct quotation from source material.
+    pub const QUOTE: u32 = 100306;
+    /// End of quotation.
+    pub const QUOTE_END: u32 = 100307;
+    /// Start of citation marker - references a source.
+    pub const CITE: u32 = 100308;
+    /// End of citation marker.
+    pub const CITE_END: u32 = 100309;
+    /// Start of source identifier - URL, document ID, or metadata.
+    pub const SOURCE: u32 = 100310;
+    /// End of source identifier.
+    pub const SOURCE_END: u32 = 100311;
+
+    // =========================================================================
+    // Memory/State Management (100312-100315)
+    // =========================================================================
+
+    /// Start of memory block - information to persist across sessions.
+    pub const MEMORY: u32 = 100312;
+    /// End of memory block.
+    pub const MEMORY_END: u32 = 100313;
+    /// Start of recall block - retrieved persistent memory.
+    pub const RECALL: u32 = 100314;
+    /// End of recall block.
+    pub const RECALL_END: u32 = 100315;
+
+    // =========================================================================
+    // Control Tokens (100316-100318)
+    // =========================================================================
+
+    /// Padding token - used for batch alignment, has no semantic meaning.
+    pub const PAD: u32 = 100316;
+    /// Stop token - signals end of generation.
+    pub const STOP: u32 = 100317;
+    /// Separator token - delimits segments within a sequence.
+    pub const SEP: u32 = 100318;
+
+    // =========================================================================
+    // Multimodal Placeholders (100319-100324)
+    // =========================================================================
+
+    /// Start of image content - embedding vector or encoded image data.
+    pub const IMAGE: u32 = 100319;
+    /// End of image content.
+    pub const IMAGE_END: u32 = 100320;
+    /// Start of audio content - embedding vector or encoded audio data.
+    pub const AUDIO: u32 = 100321;
+    /// End of audio content.
+    pub const AUDIO_END: u32 = 100322;
+    /// Start of video content - embedding vector or encoded video data.
+    pub const VIDEO: u32 = 100323;
+    /// End of video content.
+    pub const VIDEO_END: u32 = 100324;
+
+    // =========================================================================
+    // Document Structure (100325-100330)
+    // =========================================================================
+
+    /// Start of title - document or section title for semantic parsing.
+    pub const TITLE: u32 = 100325;
+    /// End of title.
+    pub const TITLE_END: u32 = 100326;
+    /// Start of section - semantic document section boundary.
+    pub const SECTION: u32 = 100327;
+    /// End of section.
+    pub const SECTION_END: u32 = 100328;
+    /// Start of summary - condensed content summary.
+    pub const SUMMARY: u32 = 100329;
+    /// End of summary.
+    pub const SUMMARY_END: u32 = 100330;
+}
+
+/// Agent tokens for o200k_base (GPT-4o).
+///
+/// These special tokens extend the o200k_base vocabulary for building chat models,
+/// reasoning systems, and autonomous agents. Token IDs start at 200019 to avoid
+/// conflicts with OpenAI's reserved range (199999-200018).
+///
+/// See [`cl100k_agent_tokens`] for detailed documentation on each token category.
+/// The token semantics are identical; only the IDs differ.
+pub mod o200k_agent_tokens {
+    // =========================================================================
+    // Conversation Structure (200019-200023)
+    // =========================================================================
+
+    /// System message marker - defines assistant behavior and constraints.
+    pub const SYSTEM: u32 = 200019;
+    /// User message marker - marks human input in conversation.
+    pub const USER: u32 = 200020;
+    /// Assistant message marker - marks AI responses.
+    pub const ASSISTANT: u32 = 200021;
+    /// ChatML message start - generic delimiter for any role.
+    pub const IM_START: u32 = 200022;
+    /// ChatML message end - closes any message block.
+    pub const IM_END: u32 = 200023;
+
+    // =========================================================================
+    // Reasoning/Thinking - Chain-of-Thought (200024-200025)
+    // =========================================================================
+
+    /// Start of thinking/reasoning block (System 2 cognition).
+    pub const THINK: u32 = 200024;
+    /// End of thinking/reasoning block.
+    pub const THINK_END: u32 = 200025;
+
+    // =========================================================================
+    // ReAct Agent Loop (200026-200033)
+    // =========================================================================
+
+    /// Start of planning phase - high-level strategy formulation.
+    pub const PLAN: u32 = 200026;
+    /// End of planning phase.
+    pub const PLAN_END: u32 = 200027;
+    /// Start of individual step - discrete action within a plan.
+    pub const STEP: u32 = 200028;
+    /// End of step.
+    pub const STEP_END: u32 = 200029;
+    /// Start of action - the intent to perform an operation.
+    pub const ACT: u32 = 200030;
+    /// End of action.
+    pub const ACT_END: u32 = 200031;
+    /// Start of observation - environment feedback after action.
+    pub const OBSERVE: u32 = 200032;
+    /// End of observation.
+    pub const OBSERVE_END: u32 = 200033;
+
+    // =========================================================================
+    // Tool/Function Calling (200034-200039)
+    // =========================================================================
+
+    /// Start of function call - contains function name and arguments (usually JSON).
+    pub const FUNCTION: u32 = 200034;
+    /// End of function call.
+    pub const FUNCTION_END: u32 = 200035;
+    /// Start of function result - successful return value.
+    pub const RESULT: u32 = 200036;
+    /// End of function result.
+    pub const RESULT_END: u32 = 200037;
+    /// Start of error block - function execution failure, enables retry logic.
+    pub const ERROR: u32 = 200038;
+    /// End of error block.
+    pub const ERROR_END: u32 = 200039;
+
+    // =========================================================================
+    // Code Execution (200040-200045)
+    // =========================================================================
+
+    /// Start of code block - executable code content.
+    pub const CODE: u32 = 200040;
+    /// End of code block.
+    pub const CODE_END: u32 = 200041;
+    /// Start of execution output - stdout, return values, rendered output.
+    pub const OUTPUT: u32 = 200042;
+    /// End of execution output.
+    pub const OUTPUT_END: u32 = 200043;
+    /// Start of language identifier (e.g., "python", "javascript").
+    pub const LANG: u32 = 200044;
+    /// End of language identifier.
+    pub const LANG_END: u32 = 200045;
+
+    // =========================================================================
+    // RAG/Citations (200046-200053)
+    // =========================================================================
+
+    /// Start of retrieved context block - injected by RAG pipeline.
+    pub const CONTEXT: u32 = 200046;
+    /// End of context block.
+    pub const CONTEXT_END: u32 = 200047;
+    /// Start of direct quotation from source material.
+    pub const QUOTE: u32 = 200048;
+    /// End of quotation.
+    pub const QUOTE_END: u32 = 200049;
+    /// Start of citation marker - references a source.
+    pub const CITE: u32 = 200050;
+    /// End of citation marker.
+    pub const CITE_END: u32 = 200051;
+    /// Start of source identifier - URL, document ID, or metadata.
+    pub const SOURCE: u32 = 200052;
+    /// End of source identifier.
+    pub const SOURCE_END: u32 = 200053;
+
+    // =========================================================================
+    // Memory/State Management (200054-200057)
+    // =========================================================================
+
+    /// Start of memory block - information to persist across sessions.
+    pub const MEMORY: u32 = 200054;
+    /// End of memory block.
+    pub const MEMORY_END: u32 = 200055;
+    /// Start of recall block - retrieved persistent memory.
+    pub const RECALL: u32 = 200056;
+    /// End of recall block.
+    pub const RECALL_END: u32 = 200057;
+
+    // =========================================================================
+    // Control Tokens (200058-200060)
+    // =========================================================================
+
+    /// Padding token - used for batch alignment, has no semantic meaning.
+    pub const PAD: u32 = 200058;
+    /// Stop token - signals end of generation.
+    pub const STOP: u32 = 200059;
+    /// Separator token - delimits segments within a sequence.
+    pub const SEP: u32 = 200060;
+
+    // =========================================================================
+    // Multimodal Placeholders (200061-200066)
+    // =========================================================================
+
+    /// Start of image content - embedding vector or encoded image data.
+    pub const IMAGE: u32 = 200061;
+    /// End of image content.
+    pub const IMAGE_END: u32 = 200062;
+    /// Start of audio content - embedding vector or encoded audio data.
+    pub const AUDIO: u32 = 200063;
+    /// End of audio content.
+    pub const AUDIO_END: u32 = 200064;
+    /// Start of video content - embedding vector or encoded video data.
+    pub const VIDEO: u32 = 200065;
+    /// End of video content.
+    pub const VIDEO_END: u32 = 200066;
+
+    // =========================================================================
+    // Document Structure (200067-200072)
+    // =========================================================================
+
+    /// Start of title - document or section title for semantic parsing.
+    pub const TITLE: u32 = 200067;
+    /// End of title.
+    pub const TITLE_END: u32 = 200068;
+    /// Start of section - semantic document section boundary.
+    pub const SECTION: u32 = 200069;
+    /// End of section.
+    pub const SECTION_END: u32 = 200070;
+    /// Start of summary - condensed content summary.
+    pub const SUMMARY: u32 = 200071;
+    /// End of summary.
+    pub const SUMMARY_END: u32 = 200072;
+}
+
 /// Default cache size for encoded chunks
 const DEFAULT_CACHE_SIZE: usize = 4096;
 
@@ -425,5 +907,64 @@ mod tests {
 
         tokenizer.clear_cache();
         assert_eq!(tokenizer.cache_len(), 0);
+    }
+
+    #[test]
+    fn test_agent_tokens_constants() {
+        // Verify cl100k agent tokens don't conflict with OpenAI's reserved range
+        assert!(super::cl100k_agent_tokens::SYSTEM > 100276); // After endofprompt
+        assert!(super::cl100k_agent_tokens::SUMMARY_END == 100330); // Last token
+
+        // Verify o200k agent tokens don't conflict with OpenAI's reserved range
+        assert!(super::o200k_agent_tokens::SYSTEM > 200018); // After endofprompt
+        assert!(super::o200k_agent_tokens::SUMMARY_END == 200072); // Last token
+
+        // Verify token ordering is correct (no gaps or overlaps)
+        assert_eq!(
+            super::cl100k_agent_tokens::USER,
+            super::cl100k_agent_tokens::SYSTEM + 1
+        );
+        assert_eq!(
+            super::o200k_agent_tokens::USER,
+            super::o200k_agent_tokens::SYSTEM + 1
+        );
+    }
+
+    #[test]
+    fn test_agent_tokens_encode_decode() {
+        // Create a tokenizer with agent tokens for testing
+        let mut encoder: FxHashMap<Vec<u8>, u32> = FxHashMap::default();
+        encoder.insert(b"Hello".to_vec(), 0);
+        encoder.insert(b" ".to_vec(), 1);
+        encoder.insert(b"World".to_vec(), 2);
+
+        let mut special: FxHashMap<String, u32> = FxHashMap::default();
+        // Add some agent tokens
+        special.insert("<|system|>".to_string(), 100277);
+        special.insert("<|user|>".to_string(), 100278);
+        special.insert("<|assistant|>".to_string(), 100279);
+        special.insert("<|think|>".to_string(), 100282);
+        special.insert("<|/think|>".to_string(), 100283);
+
+        let pattern = r"\S+|\s+";
+        let tokenizer = Tokenizer::new(encoder, special, pattern).unwrap();
+
+        // Test encoding with agent tokens
+        let text = "<|system|>Hello<|user|>World";
+        let tokens = tokenizer.encode_with_special(text);
+
+        // Should contain the special tokens
+        assert!(tokens.contains(&100277)); // <|system|>
+        assert!(tokens.contains(&100278)); // <|user|>
+
+        // Test decoding back
+        let decoded = tokenizer.decode(&tokens).unwrap();
+        assert_eq!(decoded, text);
+
+        // Test think tokens
+        let think_text = "<|think|>reasoning here<|/think|>";
+        let think_tokens = tokenizer.encode_with_special(think_text);
+        assert!(think_tokens.contains(&100282)); // <|think|>
+        assert!(think_tokens.contains(&100283)); // <|/think|>
     }
 }
