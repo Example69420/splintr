@@ -55,7 +55,7 @@ See the [API Guide](docs/api_guide.md) for complete documentation and examples.
 
 ```toml
 [dependencies]
-splintr = "0.5.0"
+splintr = "0.6.0"
 ```
 
 ```rust

@@ -111,4 +111,4 @@ __all__ = [
     "LLAMA3_AGENT_TOKENS",
     "DEEPSEEK_V3_AGENT_TOKENS",
 ]
-__version__ = "0.5.0"
+__version__ = "0.6.0"
