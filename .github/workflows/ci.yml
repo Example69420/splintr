@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Rust
-        uses: dtolnay/rust-action@stable
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Install PCRE2 (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
@@ -51,9 +51,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Install Rust
-        uses: dtolnay/rust-action@stable
+        uses: dtolnay/rust-toolchain@stable
         with:
-          components: rustfmt
+          components: rustfmt, clippy
 
       - name: Check formatting
         run: cargo fmt --check
@@ -72,17 +72,17 @@ jobs:
       - name: Install PCRE2
         run: sudo apt-get update && sudo apt-get install -y libpcre2-dev
 
-      - name: Install dependencies
+      - name: Install dependencies and build
         run: |
+          python -m venv .venv
+          . .venv/bin/activate
           python -m pip install --upgrade pip
           pip install maturin tiktoken
-
-      - name: Build and install
-        run: maturin develop --release
+          maturin develop --release
 
       - name: Test Python bindings
         run: |
-          python -c "
+          .venv/bin/python -c "
           import splintr
           import tiktoken
 
