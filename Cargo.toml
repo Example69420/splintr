@@ -19,8 +19,6 @@ default = []
 pcre2 = ["dep:pcre2"]
 
 [dependencies]
-# Regexr - Rust-based regex with SIMD, lookaround support (default backend)
-regexr = { version = "0.1.0-beta.2", features = ["jit", "simd"] }
 # PCRE2 regex with JIT support (optional, for benchmarking)
 pcre2 = { version = "0.2", optional = true }
 # Rayon for internal parallelism
@@ -46,3 +44,10 @@ pcre2 = "0.2"
 opt-level = 3
 lto = true
 codegen-units = 1
+
+# Platform-specific regexr config (JIT only works on Unix x86_64)
+[target.'cfg(not(target_os = "windows"))'.dependencies]
+regexr = { version = "0.1.0-beta.3", features = ["jit", "simd"] }
+
+[target.'cfg(target_os = "windows")'.dependencies]
+regexr = { version = "0.1.0-beta.3", features = ["simd"] }
