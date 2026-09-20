@@ -246,16 +246,6 @@ soundkey-flipperzero/
 └── tests/                 Standard-library test suite (runs in CI)
 ```
 
-## 🏷️ Topics / tags
-
-Add these in **Settings → Topics** for discoverability:
-
-`flipper-zero`, `flipperzero`, `flipper`, `accessibility`, `a11y`,
-`assistive-technology`, `blind`, `low-vision`, `visually-impaired`,
-`screen-reader`, `audio-feedback`, `sonification`, `inclusive-design`,
-`haptics`, `accessible-ui`, `open-source`, `hardware-hacking`, `disability`,
-`text-to-speech`
-
 ## 📄 License & citation
 
 MIT © 2026 **Krishita Sanjay Choksi**. See [`LICENSE`](LICENSE). Citation
