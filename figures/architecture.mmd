@@ -1,0 +1,11 @@
+flowchart TB
+    U([User buttons]) --> IH[Simplified input handler<br/>10 fixed gestures]
+    IH --> NAV[Accessible navigation model<br/>announce / confirm / signal edges]
+    NAV --> ENG[Audio feedback engine<br/>tones + patterns + speech]
+    NAV --> AD[Function adapters<br/>wrap Flipper functions]
+    AD --> SON[Result sonifier<br/>proximity / category / level / count]
+    CUE[(Sound-cue library)] --> SON
+    CUE --> ENG
+    SON --> ENG
+    SET[[Settings: speech / tones / haptics / verbosity]] -.-> ENG
+    ENG --> OUT([Audio out: tones / patterns / speech + optional haptics])

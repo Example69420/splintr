@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you use SoundKey, please cite it as below."
+title: "SoundKey — an accessibility-first audio interface for Flipper Zero"
+abstract: >-
+  SoundKey makes common Flipper Zero functions usable by blind and low-vision
+  users entirely through audio (and optional haptics), with a simplified,
+  predictable, screen-free interaction model, a reusable audio-feedback
+  framework, and a documented sound-cue library.
+type: software
+version: "1.0.0"
+date-released: "2026-09-19"
+license: MIT
+repository-code: "https://github.com/Krishita17/soundkey-flipperzero"
+authors:
+  - family-names: "Choksi"
+    given-names: "Krishita Sanjay"
+keywords:
+  - accessibility
+  - assistive-technology
+  - flipper-zero
+  - sonification
+  - audio-feedback
+  - screen-reader
+  - inclusive-design

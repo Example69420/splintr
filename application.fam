@@ -1,0 +1,16 @@
+# SoundKey — accessibility-first audio interface for Flipper Zero.
+# Author: Krishita Sanjay Choksi. License: MIT.
+App(
+    appid="soundkey",
+    name="SoundKey (Accessibility)",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="soundkey_app",
+    stack_size=2 * 1024,
+    fap_category="Tools",
+    fap_author="Krishita Sanjay Choksi",
+    fap_version="1.0",
+    fap_description="Accessibility-first audio interface: spoken/tonal feedback, "
+    "sound-cue navigation, and simplified controls so blind and low-vision users "
+    "can operate the device without the screen.",
+    sources=["src/*.c"],
+)

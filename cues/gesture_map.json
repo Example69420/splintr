@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "name": "SoundKey Gesture Map",
+    "version": "1.0.0",
+    "author": "Krishita Sanjay Choksi",
+    "principle": "The same gesture means the same thing everywhere in the app. There are five short-press actions and five long-press actions, mapped onto the Flipper Zero's five-way pad plus Back. A user only ever has to learn ten gestures, and they never change meaning between screens. Long-press is a fixed threshold of 500 ms.",
+    "long_press_ms": 500
+  },
+  "gestures": [
+    {"button": "Up",    "press": "short", "action": "prev_item",   "meaning": "Move focus to the previous item; the new item is announced.", "cue": "nav_move"},
+    {"button": "Down",  "press": "short", "action": "next_item",   "meaning": "Move focus to the next item; the new item is announced.", "cue": "nav_move"},
+    {"button": "OK",    "press": "short", "action": "select",      "meaning": "Select / activate the focused item, or toggle a setting.", "cue": "select"},
+    {"button": "Back",  "press": "short", "action": "back",        "meaning": "Go back one level, or cancel the current action.", "cue": "back"},
+    {"button": "Left",  "press": "short", "action": "decrease",    "meaning": "Decrease the focused value, or move to the previous category/field.", "cue": "nav_move"},
+    {"button": "Right", "press": "short", "action": "increase",    "meaning": "Increase the focused value, or move to the next category/field.", "cue": "nav_move"},
+
+    {"button": "OK",    "press": "long",  "action": "primary_run", "meaning": "Start or stop the screen's primary running action (e.g. begin/end a scan).", "cue": "action_start"},
+    {"button": "Back",  "press": "long",  "action": "go_home",     "meaning": "Jump straight back to the home menu from anywhere.", "cue": "home"},
+    {"button": "Up",    "press": "long",  "action": "repeat",      "meaning": "Repeat the last announcement.", "cue": "repeat"},
+    {"button": "Down",  "press": "long",  "action": "help",        "meaning": "Announce where you are plus the gestures available on this screen (context help).", "cue": "repeat"}
+  ]
+}

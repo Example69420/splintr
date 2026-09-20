@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 850" width="760" height="850" role="img" aria-label="Interaction flow: locate_tag">
+<title>Interaction flow: locate_tag</title><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1b1b1f"/></marker></defs>
+<rect width="760" height="850" fill="#ffffff"/>
+<text x="30" y="40" font-size="18" fill="#1b1b1f" text-anchor="start" font-weight="bold" font-family="sans-serif">What you hear — flow: locate_tag</text>
+<text x="30" y="62" font-size="11" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="sans-serif">From home, open Scanners, run the Proximity locator, hear the geiger stream accelerate as the target gets closer, then the &#x27;found&#x27; cue.</text>
+<circle cx="40" cy="86" r="6" fill="#56B4E9" stroke="none" stroke-width="0"/>
+<line x1="40" y1="92" x2="40" y2="110" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="90" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 0.00s</text>
+<text x="130" y="90" font-size="12" fill="#56B4E9" text-anchor="start" font-weight="bold" font-family="monospace">nav_move</text>
+<text x="300" y="90" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;Readouts&quot;</text>
+<circle cx="40" cy="116" r="6" fill="#56B4E9" stroke="none" stroke-width="0"/>
+<line x1="40" y1="122" x2="40" y2="140" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="120" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 0.15s</text>
+<text x="130" y="120" font-size="12" fill="#56B4E9" text-anchor="start" font-weight="bold" font-family="monospace">nav_move</text>
+<text x="300" y="120" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;Scanners&quot;</text>
+<circle cx="40" cy="146" r="6" fill="#0072B2" stroke="none" stroke-width="0"/>
+<line x1="40" y1="152" x2="40" y2="170" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="150" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 0.30s</text>
+<text x="130" y="150" font-size="12" fill="#0072B2" text-anchor="start" font-weight="bold" font-family="monospace">select</text>
+<text x="300" y="150" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;Scanners&quot;</text>
+<circle cx="40" cy="176" r="6" fill="#56B4E9" stroke="none" stroke-width="0"/>
+<line x1="40" y1="182" x2="40" y2="200" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="180" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 0.54s</text>
+<text x="130" y="180" font-size="12" fill="#56B4E9" text-anchor="start" font-weight="bold" font-family="monospace">nav_move</text>
+<text x="300" y="180" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;Proximity locator&quot;</text>
+<circle cx="40" cy="206" r="6" fill="#0072B2" stroke="none" stroke-width="0"/>
+<line x1="40" y1="212" x2="40" y2="230" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="210" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 0.69s</text>
+<text x="130" y="210" font-size="12" fill="#0072B2" text-anchor="start" font-weight="bold" font-family="monospace">select</text>
+<text x="300" y="210" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;Proximity locator&quot;</text>
+<circle cx="40" cy="236" r="6" fill="#CC79A7" stroke="none" stroke-width="0"/>
+<line x1="40" y1="242" x2="40" y2="260" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="240" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 0.94s</text>
+<text x="130" y="240" font-size="12" fill="#CC79A7" text-anchor="start" font-weight="bold" font-family="monospace">action_start</text>
+<text x="300" y="240" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;locator started&quot;</text>
+<circle cx="40" cy="266" r="6" fill="#E69F00" stroke="none" stroke-width="0"/>
+<line x1="40" y1="272" x2="40" y2="290" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="270" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 1.21s</text>
+<text x="130" y="270" font-size="12" fill="#E69F00" text-anchor="start" font-weight="bold" font-family="monospace">proximity</text>
+<text x="300" y="270" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;15 percent&quot;</text>
+<circle cx="40" cy="296" r="6" fill="#E69F00" stroke="none" stroke-width="0"/>
+<line x1="40" y1="302" x2="40" y2="320" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="300" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 3.28s</text>
+<text x="130" y="300" font-size="12" fill="#E69F00" text-anchor="start" font-weight="bold" font-family="monospace">proximity</text>
+<text x="300" y="300" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;18 percent&quot;</text>
+<circle cx="40" cy="326" r="6" fill="#E69F00" stroke="none" stroke-width="0"/>
+<line x1="40" y1="332" x2="40" y2="350" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="330" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 5.04s</text>
+<text x="130" y="330" font-size="12" fill="#E69F00" text-anchor="start" font-weight="bold" font-family="monospace">proximity</text>
+<text x="300" y="330" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;24 percent&quot;</text>
+<circle cx="40" cy="356" r="6" fill="#E69F00" stroke="none" stroke-width="0"/>
+<line x1="40" y1="362" x2="40" y2="380" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="360" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 6.83s</text>
+<text x="130" y="360" font-size="12" fill="#E69F00" text-anchor="start" font-weight="bold" font-family="monospace">proximity</text>
+<text x="300" y="360" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;31 percent&quot;</text>
+<circle cx="40" cy="386" r="6" fill="#E69F00" stroke="none" stroke-width="0"/>
+<line x1="40" y1="392" x2="40" y2="410" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="390" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 8.44s</text>
+<text x="130" y="390" font-size="12" fill="#E69F00" text-anchor="start" font-weight="bold" font-family="monospace">proximity</text>
+<text x="300" y="390" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;28 percent&quot;</text>
+<circle cx="40" cy="416" r="6" fill="#E69F00" stroke="none" stroke-width="0"/>
+<line x1="40" y1="422" x2="40" y2="440" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="420" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace">10.34s</text>
+<text x="130" y="420" font-size="12" fill="#E69F00" text-anchor="start" font-weight="bold" font-family="monospace">proximity</text>
+<text x="300" y="420" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;48 percent&quot;</text>
+<circle cx="40" cy="446" r="6" fill="#E69F00" stroke="none" stroke-width="0"/>
+<line x1="40" y1="452" x2="40" y2="470" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="450" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace">11.98s</text>
+<text x="130" y="450" font-size="12" fill="#E69F00" text-anchor="start" font-weight="bold" font-family="monospace">proximity</text>
+<text x="300" y="450" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;58 percent&quot;</text>
+<circle cx="40" cy="476" r="6" fill="#E69F00" stroke="none" stroke-width="0"/>
+<line x1="40" y1="482" x2="40" y2="500" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="480" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace">13.65s</text>
+<text x="130" y="480" font-size="12" fill="#E69F00" text-anchor="start" font-weight="bold" font-family="monospace">proximity</text>
+<text x="300" y="480" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;68 percent&quot;</text>
+<circle cx="40" cy="506" r="6" fill="#E69F00" stroke="none" stroke-width="0"/>
+<line x1="40" y1="512" x2="40" y2="530" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="510" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace">15.34s</text>
+<text x="130" y="510" font-size="12" fill="#E69F00" text-anchor="start" font-weight="bold" font-family="monospace">proximity</text>
+<text x="300" y="510" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;79 percent&quot;</text>
+<circle cx="40" cy="536" r="6" fill="#E69F00" stroke="none" stroke-width="0"/>
+<line x1="40" y1="542" x2="40" y2="560" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="540" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace">16.96s</text>
+<text x="130" y="540" font-size="12" fill="#E69F00" text-anchor="start" font-weight="bold" font-family="monospace">proximity</text>
+<text x="300" y="540" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;90 percent&quot;</text>
+<circle cx="40" cy="566" r="6" fill="#E69F00" stroke="none" stroke-width="0"/>
+<line x1="40" y1="572" x2="40" y2="590" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="570" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace">18.58s</text>
+<text x="130" y="570" font-size="12" fill="#E69F00" text-anchor="start" font-weight="bold" font-family="monospace">proximity</text>
+<text x="300" y="570" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;100 percent&quot;</text>
+<circle cx="40" cy="596" r="6" fill="#E69F00" stroke="none" stroke-width="0"/>
+<line x1="40" y1="602" x2="40" y2="620" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="600" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace">20.22s</text>
+<text x="130" y="600" font-size="12" fill="#E69F00" text-anchor="start" font-weight="bold" font-family="monospace">proximity</text>
+<text x="300" y="600" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;100 percent&quot;</text>
+<circle cx="40" cy="626" r="6" fill="#009E73" stroke="none" stroke-width="0"/>
+<line x1="40" y1="632" x2="40" y2="650" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="630" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace">21.86s</text>
+<text x="130" y="630" font-size="12" fill="#009E73" text-anchor="start" font-weight="bold" font-family="monospace">result_found</text>
+<text x="300" y="630" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;found tag&quot;</text>
+<circle cx="40" cy="656" r="6" fill="#CC79A7" stroke="none" stroke-width="0"/>
+<line x1="40" y1="662" x2="40" y2="680" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="660" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace">22.23s</text>
+<text x="130" y="660" font-size="12" fill="#CC79A7" text-anchor="start" font-weight="bold" font-family="monospace">action_stop</text>
+<text x="300" y="660" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;locator stopped&quot;</text>
+<circle cx="40" cy="686" r="6" fill="#0072B2" stroke="none" stroke-width="0"/>
+<line x1="40" y1="692" x2="40" y2="710" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="690" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace">22.50s</text>
+<text x="130" y="690" font-size="12" fill="#0072B2" text-anchor="start" font-weight="bold" font-family="monospace">back</text>
+<text x="300" y="690" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;back&quot;</text>
+<circle cx="40" cy="716" r="6" fill="#56B4E9" stroke="none" stroke-width="0"/>
+<line x1="40" y1="722" x2="40" y2="740" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="720" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace">22.74s</text>
+<text x="130" y="720" font-size="12" fill="#56B4E9" text-anchor="start" font-weight="bold" font-family="monospace">nav_move</text>
+<text x="300" y="720" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;Scanners&quot;</text>
+<circle cx="40" cy="746" r="6" fill="#0072B2" stroke="none" stroke-width="0"/>
+<line x1="40" y1="752" x2="40" y2="770" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="750" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace">22.89s</text>
+<text x="130" y="750" font-size="12" fill="#0072B2" text-anchor="start" font-weight="bold" font-family="monospace">home</text>
+<text x="300" y="750" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;home&quot;</text>
+<circle cx="40" cy="776" r="6" fill="#56B4E9" stroke="none" stroke-width="0"/>
+<text x="60" y="780" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace">23.20s</text>
+<text x="130" y="780" font-size="12" fill="#56B4E9" text-anchor="start" font-weight="bold" font-family="monospace">nav_move</text>
+<text x="300" y="780" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;Scanners&quot;</text>
+</svg>

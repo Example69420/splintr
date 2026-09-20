@@ -1,0 +1,12 @@
+# classify_signal
+# SoundKey audio transcript (captions = what a TTS voice would say)
+
+[  0.00s] say "Scanners" + cue:select
+[  0.24s] say "Proximity locator" + cue:nav_move
+[  0.39s] say "Signal classifier" + cue:nav_move
+[  0.54s] say "Signal classifier" + cue:select
+[  0.79s] say "classifier started" + cue:action_start
+[  1.06s] say "NFC" + cue:category_tone
+[  1.30s] say "classifier stopped" + cue:action_stop
+[  1.57s] say "home" + cue:home
+[  1.88s] say "Scanners" + cue:nav_move

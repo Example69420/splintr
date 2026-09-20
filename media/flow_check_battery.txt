@@ -1,0 +1,10 @@
+# check_battery
+# SoundKey audio transcript (captions = what a TTS voice would say)
+
+[  0.00s] say "Readouts" + cue:nav_move
+[  0.15s] say "Readouts" + cue:select
+[  0.39s] say "Battery readout" + cue:nav_move
+[  0.54s] say "Battery readout" + cue:select
+[  0.79s] say "72 percent battery" + cue:level_pitch
+[  1.17s] say "back" + cue:back
+[  1.41s] say "Readouts" + cue:nav_move

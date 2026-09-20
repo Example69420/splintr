@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Flipper / ufbt build output
+.ufbt/
+*.fap
+dist/
+
+# OS
+.DS_Store
+
+# Scratch
+/tmp/
+*.log

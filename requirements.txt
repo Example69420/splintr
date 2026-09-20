@@ -1,0 +1,12 @@
+# SoundKey has NO third-party Python dependencies.
+#
+# The simulator, audio synthesis, figures, charts, evaluation, and demo GIF are
+# all built on the Python standard library (>= 3.8), so the project runs from a
+# clean clone with nothing to install:
+#
+#     python3 -m unittest discover -s tests
+#     python3 figures/generate_figures.py
+#     python3 eval/run_eval.py
+#     cd sim && python3 -m soundkey_sim.cli export-demos ../media
+#
+# The on-device Flipper app is built separately with ufbt (see build/README.md).

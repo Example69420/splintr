@@ -1,0 +1,6 @@
+# learn_by_help
+# SoundKey audio transcript (captions = what a TTS voice would say)
+
+[  0.00s] say "you are in SoundKey; item 1 of 3: Scanners" + cue:repeat
+[  0.14s] say "Readouts" + cue:nav_move
+[  0.29s] say "Readouts" + cue:repeat

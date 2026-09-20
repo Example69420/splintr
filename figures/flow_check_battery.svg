@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" width="760" height="340" role="img" aria-label="Interaction flow: check_battery">
+<title>Interaction flow: check_battery</title><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1b1b1f"/></marker></defs>
+<rect width="760" height="340" fill="#ffffff"/>
+<text x="30" y="40" font-size="18" fill="#1b1b1f" text-anchor="start" font-weight="bold" font-family="sans-serif">What you hear — flow: check_battery</text>
+<text x="30" y="62" font-size="11" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="sans-serif">Open Readouts and hear the battery level as pitch.</text>
+<circle cx="40" cy="86" r="6" fill="#56B4E9" stroke="none" stroke-width="0"/>
+<line x1="40" y1="92" x2="40" y2="110" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="90" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 0.00s</text>
+<text x="130" y="90" font-size="12" fill="#56B4E9" text-anchor="start" font-weight="bold" font-family="monospace">nav_move</text>
+<text x="300" y="90" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;Readouts&quot;</text>
+<circle cx="40" cy="116" r="6" fill="#0072B2" stroke="none" stroke-width="0"/>
+<line x1="40" y1="122" x2="40" y2="140" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="120" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 0.15s</text>
+<text x="130" y="120" font-size="12" fill="#0072B2" text-anchor="start" font-weight="bold" font-family="monospace">select</text>
+<text x="300" y="120" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;Readouts&quot;</text>
+<circle cx="40" cy="146" r="6" fill="#56B4E9" stroke="none" stroke-width="0"/>
+<line x1="40" y1="152" x2="40" y2="170" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="150" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 0.39s</text>
+<text x="130" y="150" font-size="12" fill="#56B4E9" text-anchor="start" font-weight="bold" font-family="monospace">nav_move</text>
+<text x="300" y="150" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;Battery readout&quot;</text>
+<circle cx="40" cy="176" r="6" fill="#0072B2" stroke="none" stroke-width="0"/>
+<line x1="40" y1="182" x2="40" y2="200" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="180" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 0.54s</text>
+<text x="130" y="180" font-size="12" fill="#0072B2" text-anchor="start" font-weight="bold" font-family="monospace">select</text>
+<text x="300" y="180" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;Battery readout&quot;</text>
+<circle cx="40" cy="206" r="6" fill="#E69F00" stroke="none" stroke-width="0"/>
+<line x1="40" y1="212" x2="40" y2="230" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="210" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 0.79s</text>
+<text x="130" y="210" font-size="12" fill="#E69F00" text-anchor="start" font-weight="bold" font-family="monospace">level_pitch</text>
+<text x="300" y="210" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;72 percent battery&quot;</text>
+<circle cx="40" cy="236" r="6" fill="#0072B2" stroke="none" stroke-width="0"/>
+<line x1="40" y1="242" x2="40" y2="260" stroke="#d9d9e0" stroke-width="2"/>
+<text x="60" y="240" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 1.17s</text>
+<text x="130" y="240" font-size="12" fill="#0072B2" text-anchor="start" font-weight="bold" font-family="monospace">back</text>
+<text x="300" y="240" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;back&quot;</text>
+<circle cx="40" cy="266" r="6" fill="#56B4E9" stroke="none" stroke-width="0"/>
+<text x="60" y="270" font-size="12" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="monospace"> 1.41s</text>
+<text x="130" y="270" font-size="12" fill="#56B4E9" text-anchor="start" font-weight="bold" font-family="monospace">nav_move</text>
+<text x="300" y="270" font-size="13" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">&quot;Readouts&quot;</text>
+</svg>

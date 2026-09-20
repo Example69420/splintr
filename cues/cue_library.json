@@ -1,0 +1,540 @@
+{
+  "meta": {
+    "name": "SoundKey Sound-Cue Library",
+    "version": "1.0.0",
+    "author": "Krishita Sanjay Choksi",
+    "description": "The canonical mapping of SoundKey interface states and results to tones, patterns, spoken text, and haptics. This file is the single source of truth: the desktop simulator, the audio-demo generator, the on-device Flipper app, and the generated legend/gesture tables all read from it (the C app embeds a generated copy).",
+    "design_notes": "Frequencies are chosen to be comfortably within the Flipper piezo's usable range (~200-4000 Hz) and to be mutually distinguishable by ear. Categories use a rising musical scale (C5 major) so 'higher category = higher pitch' is learnable. Confirmation vs. error use a rising vs. falling two-note motif, a widely used screen-reader convention. Durations are in milliseconds.",
+    "audio": {
+      "sample_rate_hz": 44100,
+      "waveform": "sine",
+      "envelope": {
+        "attack_ms": 4,
+        "release_ms": 12,
+        "note": "A short attack/release removes clicks and mimics the softened square-ish tone of the on-device piezo without harsh edges."
+      },
+      "default_amplitude": 0.6
+    }
+  },
+  "tone_palette": {
+    "comment": "Named reference pitches so cues stay consistent and easy to retune in one place.",
+    "low": 180,
+    "mid": 440,
+    "high": 880,
+    "cat1": 523,
+    "cat2": 587,
+    "cat3": 659,
+    "cat4": 784,
+    "cat5": 880,
+    "cat6": 988
+  },
+  "cues": [
+    {
+      "id": "nav_move",
+      "group": "navigation",
+      "label": "Move to next/previous item",
+      "purpose": "A single soft tick emitted every time focus moves between menu items. Confirms the cursor moved without over-speaking.",
+      "kind": "tone",
+      "sequence": [
+        {
+          "freq": 700,
+          "dur": 30
+        }
+      ],
+      "speech_template": "{item}",
+      "haptic": [
+        {
+          "on": 15
+        }
+      ],
+      "verbosity_floor": "terse"
+    },
+    {
+      "id": "nav_boundary",
+      "group": "navigation",
+      "label": "Edge of a list (no wrap)",
+      "purpose": "Played when the user tries to move past the first or last item. Tells them the list has an edge so they are not left guessing why nothing changed.",
+      "kind": "pattern",
+      "sequence": [
+        {
+          "freq": 300,
+          "dur": 40
+        },
+        {
+          "gap": 30
+        },
+        {
+          "freq": 300,
+          "dur": 40
+        }
+      ],
+      "speech_template": "edge",
+      "haptic": [
+        {
+          "on": 20
+        },
+        {
+          "off": 40
+        },
+        {
+          "on": 20
+        }
+      ],
+      "verbosity_floor": "terse"
+    },
+    {
+      "id": "select",
+      "group": "navigation",
+      "label": "Select / activate item",
+      "purpose": "Confirms an item was chosen and an action or submenu is opening.",
+      "kind": "pattern",
+      "sequence": [
+        {
+          "freq": 660,
+          "dur": 45
+        },
+        {
+          "gap": 20
+        },
+        {
+          "freq": 880,
+          "dur": 60
+        }
+      ],
+      "speech_template": "{item}, opening",
+      "haptic": [
+        {
+          "on": 25
+        }
+      ],
+      "verbosity_floor": "terse"
+    },
+    {
+      "id": "back",
+      "group": "navigation",
+      "label": "Go back / cancel",
+      "purpose": "Confirms the user backed out one level. Mirror image of select (falling instead of rising).",
+      "kind": "pattern",
+      "sequence": [
+        {
+          "freq": 660,
+          "dur": 45
+        },
+        {
+          "gap": 20
+        },
+        {
+          "freq": 440,
+          "dur": 60
+        }
+      ],
+      "speech_template": "back",
+      "haptic": [
+        {
+          "on": 25
+        }
+      ],
+      "verbosity_floor": "terse"
+    },
+    {
+      "id": "home",
+      "group": "navigation",
+      "label": "Returned to home / main menu",
+      "purpose": "A distinct three-note home motif so the user always knows they are at the top level.",
+      "kind": "pattern",
+      "sequence": [
+        {
+          "freq": 523,
+          "dur": 45
+        },
+        {
+          "gap": 15
+        },
+        {
+          "freq": 659,
+          "dur": 45
+        },
+        {
+          "gap": 15
+        },
+        {
+          "freq": 784,
+          "dur": 70
+        }
+      ],
+      "speech_template": "home",
+      "haptic": [
+        {
+          "on": 20
+        },
+        {
+          "off": 30
+        },
+        {
+          "on": 20
+        },
+        {
+          "off": 30
+        },
+        {
+          "on": 30
+        }
+      ],
+      "verbosity_floor": "terse"
+    },
+    {
+      "id": "repeat",
+      "group": "navigation",
+      "label": "Repeat last announcement",
+      "purpose": "A neutral acknowledgement that the last spoken/tonal announcement is being replayed.",
+      "kind": "tone",
+      "sequence": [
+        {
+          "freq": 500,
+          "dur": 25
+        }
+      ],
+      "speech_template": "{item}",
+      "haptic": [
+        {
+          "on": 10
+        }
+      ],
+      "verbosity_floor": "terse"
+    },
+    {
+      "id": "success",
+      "group": "status",
+      "label": "Action succeeded",
+      "purpose": "Rising two-note 'ta-da' motif. Universal 'done, good' confirmation.",
+      "kind": "pattern",
+      "sequence": [
+        {
+          "freq": 660,
+          "dur": 80
+        },
+        {
+          "gap": 25
+        },
+        {
+          "freq": 990,
+          "dur": 140
+        }
+      ],
+      "speech_template": "done",
+      "haptic": [
+        {
+          "on": 40
+        },
+        {
+          "off": 40
+        },
+        {
+          "on": 80
+        }
+      ],
+      "verbosity_floor": "terse"
+    },
+    {
+      "id": "error",
+      "group": "status",
+      "label": "Action failed / not allowed",
+      "purpose": "Falling low buzz. Clearly distinct from success so the two are never confused.",
+      "kind": "pattern",
+      "sequence": [
+        {
+          "freq": 340,
+          "dur": 90
+        },
+        {
+          "gap": 25
+        },
+        {
+          "freq": 200,
+          "dur": 180
+        }
+      ],
+      "speech_template": "error",
+      "haptic": [
+        {
+          "on": 60
+        },
+        {
+          "off": 30
+        },
+        {
+          "on": 120
+        }
+      ],
+      "verbosity_floor": "terse"
+    },
+    {
+      "id": "action_start",
+      "group": "status",
+      "label": "A running action started (e.g. scan begins)",
+      "purpose": "Marks the transition into an active/streaming mode. A wide octave leap UP -- an unmistakable 'we are going live' gesture, distinct from every navigation cue.",
+      "kind": "pattern",
+      "sequence": [
+        {
+          "freq": 392,
+          "dur": 55
+        },
+        {
+          "gap": 18
+        },
+        {
+          "freq": 784,
+          "dur": 75
+        }
+      ],
+      "speech_template": "started",
+      "haptic": [
+        {
+          "on": 30
+        }
+      ],
+      "verbosity_floor": "normal"
+    },
+    {
+      "id": "action_stop",
+      "group": "status",
+      "label": "A running action stopped",
+      "purpose": "Marks leaving an active mode. A wide octave leap DOWN, the mirror of action_start.",
+      "kind": "pattern",
+      "sequence": [
+        {
+          "freq": 784,
+          "dur": 55
+        },
+        {
+          "gap": 18
+        },
+        {
+          "freq": 392,
+          "dur": 75
+        }
+      ],
+      "speech_template": "stopped",
+      "haptic": [
+        {
+          "on": 30
+        }
+      ],
+      "verbosity_floor": "normal"
+    },
+    {
+      "id": "toggle_on",
+      "group": "status",
+      "label": "Setting turned on",
+      "purpose": "Two quick equal high blips (flat contour) for boolean-on -- rhythmically distinct from the rising 'select' cue.",
+      "kind": "pattern",
+      "sequence": [
+        {
+          "freq": 740,
+          "dur": 35
+        },
+        {
+          "gap": 12
+        },
+        {
+          "freq": 740,
+          "dur": 55
+        }
+      ],
+      "speech_template": "{item} on",
+      "haptic": [
+        {
+          "on": 20
+        }
+      ],
+      "verbosity_floor": "terse"
+    },
+    {
+      "id": "toggle_off",
+      "group": "status",
+      "label": "Setting turned off",
+      "purpose": "Two quick equal low blips (flat contour) for boolean-off.",
+      "kind": "pattern",
+      "sequence": [
+        {
+          "freq": 466,
+          "dur": 35
+        },
+        {
+          "gap": 12
+        },
+        {
+          "freq": 466,
+          "dur": 55
+        }
+      ],
+      "speech_template": "{item} off",
+      "haptic": [
+        {
+          "on": 20
+        }
+      ],
+      "verbosity_floor": "terse"
+    },
+    {
+      "id": "result_found",
+      "group": "result",
+      "label": "Target found",
+      "purpose": "Bright, unmistakable double chirp announcing a positive result from a scan/read.",
+      "kind": "pattern",
+      "sequence": [
+        {
+          "freq": 880,
+          "dur": 60
+        },
+        {
+          "gap": 20
+        },
+        {
+          "freq": 1180,
+          "dur": 60
+        },
+        {
+          "gap": 20
+        },
+        {
+          "freq": 1480,
+          "dur": 90
+        }
+      ],
+      "speech_template": "found {detail}",
+      "haptic": [
+        {
+          "on": 30
+        },
+        {
+          "off": 25
+        },
+        {
+          "on": 30
+        },
+        {
+          "off": 25
+        },
+        {
+          "on": 50
+        }
+      ],
+      "verbosity_floor": "normal"
+    },
+    {
+      "id": "result_not_found",
+      "group": "result",
+      "label": "Nothing found",
+      "purpose": "A single flat low tone. Deliberately unexciting so 'found' always stands out against it.",
+      "kind": "tone",
+      "sequence": [
+        {
+          "freq": 260,
+          "dur": 220
+        }
+      ],
+      "speech_template": "nothing found",
+      "haptic": [
+        {
+          "on": 120
+        }
+      ],
+      "verbosity_floor": "normal"
+    },
+    {
+      "id": "proximity",
+      "group": "result",
+      "label": "Proximity / signal strength (geiger style)",
+      "purpose": "A stream of clicks whose RATE encodes closeness/strength: faster = closer/stronger. The signature sonification. Rate is computed at render time from a 0.0-1.0 level.",
+      "kind": "dynamic",
+      "dynamic": {
+        "type": "click_rate",
+        "click": {
+          "freq": 1500,
+          "dur": 8
+        },
+        "min_rate_hz": 1.0,
+        "max_rate_hz": 25.0,
+        "curve": "quadratic",
+        "note": "rate = min + (max-min) * level^2, so the last approach accelerates sharply and gives fine discrimination when very close."
+      },
+      "speech_template": "{percent} percent",
+      "haptic": "mirrors clicks",
+      "verbosity_floor": "normal"
+    },
+    {
+      "id": "level_pitch",
+      "group": "result",
+      "label": "Continuous value as pitch",
+      "purpose": "Maps a 0.0-1.0 value to pitch (higher value = higher pitch) for readouts like battery, volume, or a meter. Alternative to proximity for non-search values.",
+      "kind": "dynamic",
+      "dynamic": {
+        "type": "pitch_map",
+        "min_freq": 300,
+        "max_freq": 1200,
+        "dur": 260,
+        "curve": "linear",
+        "note": "freq = min + (max-min) * level"
+      },
+      "speech_template": "{percent} percent",
+      "haptic": [
+        {
+          "on": 40
+        }
+      ],
+      "verbosity_floor": "normal"
+    },
+    {
+      "id": "category_tone",
+      "group": "result",
+      "label": "Category as distinct tone",
+      "purpose": "Encodes a discrete category (1..6) as a note on a rising scale so categories are told apart by pitch. Used for e.g. signal type, tag class, or protocol family.",
+      "kind": "dynamic",
+      "dynamic": {
+        "type": "category",
+        "scale": [
+          523,
+          587,
+          659,
+          784,
+          880,
+          988
+        ],
+        "dur": 120,
+        "note": "category index (1-based) selects a note; index above the scale length wraps up an octave."
+      },
+      "speech_template": "category {category}",
+      "haptic": [
+        {
+          "on": 25
+        }
+      ],
+      "verbosity_floor": "normal"
+    },
+    {
+      "id": "count_beeps",
+      "group": "result",
+      "label": "Small count as beeps",
+      "purpose": "For small integer results (0-9), emits that many evenly spaced beeps so a count can be perceived without speech.",
+      "kind": "dynamic",
+      "dynamic": {
+        "type": "count",
+        "beep": {
+          "freq": 740,
+          "dur": 45
+        },
+        "gap": 90,
+        "max": 9,
+        "note": "counts above max fall back to spoken number."
+      },
+      "speech_template": "{count}",
+      "haptic": [
+        {
+          "on": 20
+        }
+      ],
+      "verbosity_floor": "normal"
+    }
+  ]
+}

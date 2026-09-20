@@ -1,0 +1,27 @@
+# locate_tag
+# SoundKey audio transcript (captions = what a TTS voice would say)
+
+[  0.00s] say "Readouts" + cue:nav_move
+[  0.15s] say "Scanners" + cue:nav_move
+[  0.30s] say "Scanners" + cue:select
+[  0.54s] say "Proximity locator" + cue:nav_move
+[  0.69s] say "Proximity locator" + cue:select
+[  0.94s] say "locator started" + cue:action_start
+[  1.21s] say "15 percent" + cue:proximity
+[  3.28s] say "18 percent" + cue:proximity
+[  5.04s] say "24 percent" + cue:proximity
+[  6.83s] say "31 percent" + cue:proximity
+[  8.44s] say "28 percent" + cue:proximity
+[ 10.34s] say "48 percent" + cue:proximity
+[ 11.98s] say "58 percent" + cue:proximity
+[ 13.65s] say "68 percent" + cue:proximity
+[ 15.34s] say "79 percent" + cue:proximity
+[ 16.96s] say "90 percent" + cue:proximity
+[ 18.58s] say "100 percent" + cue:proximity
+[ 20.22s] say "100 percent" + cue:proximity
+[ 21.86s] say "found tag" + cue:result_found
+[ 22.23s] say "locator stopped" + cue:action_stop
+[ 22.50s] say "back" + cue:back
+[ 22.74s] say "Scanners" + cue:nav_move
+[ 22.89s] say "home" + cue:home
+[ 23.20s] say "Scanners" + cue:nav_move

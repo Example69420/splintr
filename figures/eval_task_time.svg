@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 304" width="720" height="304" role="img" aria-label="Screen-free task completion (proxy)">
+<title>Screen-free task completion (proxy)</title><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1b1b1f"/></marker></defs>
+<rect width="720" height="304" fill="#ffffff"/>
+<text x="30" y="36" font-size="18" fill="#1b1b1f" text-anchor="start" font-weight="bold" font-family="sans-serif">Auditory time-to-complete per core task</text>
+<text x="30" y="58" font-size="11" fill="#5c5c66" text-anchor="start" font-weight="normal" font-family="sans-serif">PROXY: rendered audio duration, not human timing — see eval/README.md</text>
+<text x="210" y="108" font-size="13" fill="#1b1b1f" text-anchor="end" font-weight="normal" font-family="monospace">locate_tag</text>
+<rect x="220" y="90" width="440.0" height="26" rx="4" fill="#009E73" stroke="none" stroke-width="2" opacity="1.0"/>
+<text x="668.0" y="108" font-size="12" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">23.35s · 6 gestures</text>
+<text x="210" y="154" font-size="13" fill="#1b1b1f" text-anchor="end" font-weight="normal" font-family="monospace">classify_signal</text>
+<rect x="220" y="136" width="38.2526766595289" height="26" rx="4" fill="#009E73" stroke="none" stroke-width="2" opacity="1.0"/>
+<text x="266.2526766595289" y="154" font-size="12" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">2.03s · 4 gestures</text>
+<text x="210" y="200" font-size="13" fill="#1b1b1f" text-anchor="end" font-weight="normal" font-family="monospace">check_battery</text>
+<rect x="220" y="182" width="29.39614561027837" height="26" rx="4" fill="#009E73" stroke="none" stroke-width="2" opacity="1.0"/>
+<text x="257.3961456102784" y="200" font-size="12" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">1.56s · 4 gestures</text>
+<text x="210" y="246" font-size="13" fill="#1b1b1f" text-anchor="end" font-weight="normal" font-family="monospace">learn_by_help</text>
+<rect x="220" y="228" width="8.29122055674518" height="26" rx="4" fill="#009E73" stroke="none" stroke-width="2" opacity="1.0"/>
+<text x="236.29122055674517" y="246" font-size="12" fill="#1b1b1f" text-anchor="start" font-weight="normal" font-family="sans-serif">0.44s · 3 gestures</text>
+<text x="30" y="284" font-size="12" fill="#009E73" text-anchor="start" font-weight="normal" font-family="sans-serif">All core tasks complete with audio alone (green).</text>
+</svg>
